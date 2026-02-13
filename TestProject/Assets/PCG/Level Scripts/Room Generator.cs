@@ -310,7 +310,7 @@ public class RoomGen : MonoBehaviour
             }
         }
 
-
-        OnRoomGenComplete?.Invoke();
+        //Invokes event listener in FloorCreator.cs to run once room generation code is complete.
+        OnRoomGenComplete.Invoke();
     }
 }

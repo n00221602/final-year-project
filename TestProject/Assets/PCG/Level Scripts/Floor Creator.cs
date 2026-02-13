@@ -1,14 +1,14 @@
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class FloorCreator : MonoBehaviour
 {
 
     public LayoutGen roomLayout;
     public RoomGen roomGen;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    void Awake()
     {
+        //Once the room generation is complete, CreateFloorLayout is called to reposition the rooms accordingly.
         roomGen.OnRoomGenComplete.AddListener(CreateFloorLayout);
     }
 

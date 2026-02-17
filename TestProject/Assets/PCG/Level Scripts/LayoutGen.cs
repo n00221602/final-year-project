@@ -36,6 +36,13 @@ public class LayoutGen : MonoBehaviour
     // { 0,0,0,0,0,0,2,3,3,3,2},
     // { 0,0,0,0,0,0,1,2,2,2,1}
 
+    //Rectangle
+    // { 1,2,2,2,2,2,2,1},  
+    // { 2,3,3,3,3,3,3,2},
+    // { 2,3,3,3,3,3,3,2},
+    // { 2,3,3,3,3,3,3,2},
+    // { 1,2,2,2,2,2,2,1}
+
     //V-Shape (Co-Pilot Generated + tweaked)
     // { 1,2,2,2,2,2,1,0,1,2,2,2,2,2,1},
     // { 2,3,3,3,3,3,2,0,2,3,3,3,3,3,2},
@@ -64,14 +71,23 @@ public class LayoutGen : MonoBehaviour
 
     public int[,] layout2 = new int[,]
     {
-     { 1,2,2,2,2,2,2,2,2,2,1},
-     { 2,3,3,3,3,3,3,3,3,3,2},
-     { 2,3,3,3,3,3,3,3,3,3,5},
-     { 1,2,2,2,2,2,1,3,3,3,2},
-     { 0,0,0,0,0,0,2,3,3,3,2},
-     { 0,0,0,0,0,0,2,3,3,3,2},
-     { 0,0,0,0,0,0,1,2,2,2,1}
+     { 1,2,2,5,2,2,2,2,1},
+     { 2,3,3,3,3,3,3,3,2},
+     { 2,3,3,3,3,3,3,3,5},
+     { 1,2,2,2,1,3,3,3,2},
+     { 0,0,0,0,2,3,3,3,2},
+     { 0,0,0,0,2,3,3,3,2},
+     { 0,0,0,0,1,2,2,2,1}
     };
+
+    public int[,] shop = new int[,]
+{
+     { 1,2,2,2,2,2,1},
+     { 2,3,3,3,3,3,2},
+     { 2,3,3,3,3,3,2},
+     { 2,3,3,3,3,3,2},
+     { 1,2,2,4,2,2,1}
+};
 
     //NOTE: Should wall and corner prefabs just have a full floor tile? Opposed to having floors only on the "inner" sections?
     //If not then i will have to create an "inner corner" prefab, so having each prefab contain its own floor tile would be easier but

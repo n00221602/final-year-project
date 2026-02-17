@@ -6,22 +6,19 @@ public class FloorCreator : MonoBehaviour
     public LayoutGen roomLayout;
     public RoomGen roomGen;
 
+    //Reassignable variable used when changing the position of a room.
+    GameObject roomParent;
+
+    Vector3 entryPosition;
+    Vector3 exitPosition;
+
     void Awake()
     {
         //Once the room generation is complete, CreateFloorLayout is called to reposition the rooms accordingly.
         roomGen.OnRoomGenComplete.AddListener(CreateFloorLayout);
     }
-
     void CreateFloorLayout()
     {
-        int[,] layout1 = roomLayout.layout1;
-        int[,] layout2 = roomLayout.layout2;
-        int rows1 = layout1.GetLength(0);
-        int cols1 = layout1.GetLength(1);
-        int rows2 = layout2.GetLength(0);
-        int cols2 = layout2.GetLength(1);
-
-        GameObject roomParent;
 
         if (roomGen.roomParent2 == null)
         {
@@ -34,17 +31,12 @@ public class FloorCreator : MonoBehaviour
             Debug.LogError("Room parent found");
             roomParent = roomGen.roomParent2;
 
-
-
-            Vector3 entryPosition = new Vector3(0, 0, 0);
-            Vector3 exitPosition = new Vector3(0, 0, 0);
-
-            //Find 4 location (entry)
-            for (int y = 0; y < rows1; y++)
+            //Find input position (door)
+            for (int y = 0; y < roomGen.rows1; y++)
             {
-                for (int x = 0; x < cols1; x++)
+                for (int x = 0; x < roomGen.cols1; x++)
                 {
-                    if (layout1[y, x] == 4)
+                    if (roomGen.layout1[y, x] == 4)
                     {
                         Debug.Log("door found at" + (x, y));
                         entryPosition = new Vector3(x, 0, -y);
@@ -53,12 +45,12 @@ public class FloorCreator : MonoBehaviour
                 }
             }
 
-            //Find 5 location (exit)
-            for (int y = 0; y < rows2; y++)
+            //Find output location. Output is set to 5 in the layoutGen script.
+            for (int y = 0; y < roomGen.rows2; y++)
             {
-                for (int x = 0; x < cols2; x++)
+                for (int x = 0; x < roomGen.cols2; x++)
                 {
-                    if (layout2[y, x] == 5)
+                    if (roomGen.layout2[y, x] == 5)
                     {
 
                         //Move room2 so 5 matches with the door in room1
@@ -80,3 +72,7 @@ public class FloorCreator : MonoBehaviour
         }
     }
 }
+
+//NOTE: this script needs to find the input from a previous room and match it with the ouput of the next room. Rooms can be decided in an array.
+//Every room has an input and output EXCEPT for the starting room, which only has an input.
+//input-room[0] -> output-room[1] | input-room[1] -> output-room[2] | input-room[2] -> output-room[3] etc.

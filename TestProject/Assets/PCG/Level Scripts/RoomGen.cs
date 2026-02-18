@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,6 +17,7 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public GameObject roomParent1;
     [HideInInspector] public GameObject roomParent2;
     [HideInInspector] public GameObject roomParent3;
+    [HideInInspector] public GameObject[] roomParent;
 
     //EVENT
     [HideInInspector] public UnityEvent OnRoomGenComplete;
@@ -25,17 +25,25 @@ public class RoomGen : MonoBehaviour
     //LAYOUTS
     [HideInInspector] public int[,] layout1;
     [HideInInspector] public int[,] layout2;
+    [HideInInspector] public int[,] layout3;
 
     //Rows and cols for each layout (will be made dynamic later)
     [HideInInspector] public int rows1;
     [HideInInspector] public int cols1;
     [HideInInspector] public int rows2;
     [HideInInspector] public int cols2;
+    [HideInInspector] public int rows3;
+    [HideInInspector] public int cols3;
 
     //LISTS + ARRAYS
-    [HideInInspector] public List<int[,]> layoutsList;
+    [HideInInspector] public List<int[,]> layoutList;
     [HideInInspector] public int[] rowsArray;
     [HideInInspector] public int[] colsArray;
+
+    //ROTATIONS
+    [HideInInspector] public Quaternion cornerRotation;
+    [HideInInspector] public Quaternion wallRotation;
+    [HideInInspector] public Quaternion doorRotation;
 
     void Start()
     {
@@ -51,12 +59,17 @@ public class RoomGen : MonoBehaviour
         rows2 = layout2.GetLength(0);
         cols2 = layout2.GetLength(1);
 
-        layoutsList = new List<int[,]>();
-        layoutsList.Add(layout1);
-        layoutsList.Add(layout2);
+        layout3 = roomLayout.layout3;
+        rows3 = layout3.GetLength(0);
+        cols3 = layout3.GetLength(1);
 
-        rowsArray = new int[] { rows1, rows2 };
-        colsArray = new int[] { cols1, cols2 };
+        layoutList = new List<int[,]>();
+        layoutList.Add(layout1);
+        layoutList.Add(layout2);
+        layoutList.Add(layout3);
+
+        rowsArray = new int[] { rows1, rows2, rows3 };
+        colsArray = new int[] { cols1, cols2, cols3 };
 
         //Tile targets later used for checking neighbouring tiles
         int cornerTarget = 1;
@@ -72,16 +85,16 @@ public class RoomGen : MonoBehaviour
         //Parent Object. The instantiated prefabs are placed into this parent.
         roomParent1 = new GameObject("Room");
         roomParent2 = new GameObject("Room2");
-        roomParent3 = new GameObject("Shop");
+        roomParent3 = new GameObject("Room3");
 
-        GameObject[] roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3 };
+        roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3 };
 
-        Quaternion cornerRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion wallRotation = Quaternion.Euler(0, 0, 0);
-        Quaternion doorRotation = Quaternion.Euler(0, 0, 0);
+        cornerRotation = Quaternion.Euler(0, 0, 0);
+        wallRotation = Quaternion.Euler(0, 0, 0);
+        doorRotation = Quaternion.Euler(0, 0, 0);
 
-        //Creates layoutsList based on the "layoutsList" list index
-        for (int i = 0; i < layoutsList.Count; i++)
+        //Creates layoutList based on the "layoutList" list index
+        for (int i = 0; i < layoutList.Count; i++)
         {
             Debug.Log("Creating layout " + (i));
             for (int y = 0; y < rowsArray[i]; y++)
@@ -90,7 +103,7 @@ public class RoomGen : MonoBehaviour
                 {
                     //Since scene is 3D, y axis is up. The z axis is equivilant to "height" for a 2D grid
                     Vector3 position = new Vector3(x, 0, -y);
-                    switch (layoutsList[i][y, x])
+                    switch (layoutList[i][y, x])
                     {
                         //Empty space. empty = 0
                         case 0:
@@ -100,10 +113,10 @@ public class RoomGen : MonoBehaviour
                         case 1:
 
                             //Change bools to check for corners and walls, with added checks to make sure they are within the array index.
-                            top = (y > 0) && (layoutsList[i][y - 1, x] == cornerTarget || layoutsList[i][y - 1, x] == wallTarget);
-                            bottom = (y < rowsArray[i] - 1) && (layoutsList[i][y + 1, x] == cornerTarget || layoutsList[i][y + 1, x] == wallTarget);
-                            left = (x > 0) && (layoutsList[i][y, x - 1] == cornerTarget || layoutsList[i][y, x - 1] == wallTarget);
-                            right = (x < colsArray[i] - 1) && (layoutsList[i][y, x + 1] == cornerTarget || layoutsList[i][y, x + 1] == wallTarget);
+                            top = (y > 0) && (layoutList[i][y - 1, x] == cornerTarget || layoutList[i][y - 1, x] == wallTarget);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == cornerTarget || layoutList[i][y + 1, x] == wallTarget);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == cornerTarget || layoutList[i][y, x - 1] == wallTarget);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == cornerTarget || layoutList[i][y, x + 1] == wallTarget);
 
                             //Corners are rotated accordingly to match surrounding walls.
                             if (bottom && right) //walls on bottom and right (top-left corner)
@@ -124,10 +137,10 @@ public class RoomGen : MonoBehaviour
                             }
 
                             //Change bools to check for floors
-                            top = (y > 0) && (layoutsList[i][y - 1, x] == floorTarget);
-                            bottom = (y < rowsArray[i] - 1) && (layoutsList[i][y + 1, x] == floorTarget);
-                            left = (x > 0) && (layoutsList[i][y, x - 1] == floorTarget);
-                            right = (x < colsArray[i] - 1) && (layoutsList[i][y, x + 1] == floorTarget);
+                            top = (y > 0) && (layoutList[i][y - 1, x] == floorTarget);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == floorTarget);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
 
                             //If there are floors next to the corner, use innerCorner. Else use regular corner.
                             if (top || bottom || left || right)
@@ -147,10 +160,10 @@ public class RoomGen : MonoBehaviour
                         case 2:
                             //tileTarget = 3; //Set target to floors
                             //Change bools to check for floors
-                            top = (y > 0) && (layoutsList[i][y - 1, x] == floorTarget);
-                            bottom = (y < rowsArray[i] - 1) && (layoutsList[i][y + 1, x] == floorTarget);
-                            left = (x > 0) && (layoutsList[i][y, x - 1] == floorTarget);
-                            right = (x < colsArray[i] - 1) && (layoutsList[i][y, x + 1] == floorTarget);
+                            top = (y > 0) && (layoutList[i][y - 1, x] == floorTarget);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == floorTarget);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
 
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
                             if (top)
@@ -179,29 +192,21 @@ public class RoomGen : MonoBehaviour
 
                         //Create doors. doors = 4
                         case 4:
-                            top = (y > 0) && (layoutsList[i][y - 1, x] == floorTarget);
-                            bottom = (y < rowsArray[i] - 1) && (layoutsList[i][y + 1, x] == floorTarget);
-                            left = (x > 0) && (layoutsList[i][y, x - 1] == floorTarget);
-                            right = (x < colsArray[i] - 1) && (layoutsList[i][y, x + 1] == floorTarget);
+                            top = (y > 0) && (layoutList[i][y - 1, x] == floorTarget);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == floorTarget);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
 
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
-                            if (top)
+                            if (top || bottom)
                             {
                                 doorRotation = Quaternion.Euler(0, 90, 0);
                             }
-                            else if (bottom)
-                            {
-                                doorRotation = Quaternion.Euler(0, 270, 0);
-                            }
-                            else if (left)
+                            else if (left || right)
                             {
                                 doorRotation = Quaternion.Euler(0, 0, 0);
                             }
-                            else if (right)
-                            {
-                                doorRotation = Quaternion.Euler(0, 180, 0);
-                            }
-                            Instantiate(door, position, Quaternion.identity, roomParent[i].transform);
+                            Instantiate(door, position, doorRotation, roomParent[i].transform);
                             break;
                     }
                 }

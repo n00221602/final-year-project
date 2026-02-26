@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    public Animator animator;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -38,6 +40,16 @@ public class PlayerMovement : MonoBehaviour
             rb.linearDamping = groundDrag;
         else
             rb.linearDamping = 0;
+
+        //Animations
+        if (horizontalInput != 0 || verticalInput != 0)
+        {
+            animator.SetBool("isMoving", true);
+        }
+        else
+        {
+            animator.SetBool("isMoving", false);
+        }
     }
     private void FixedUpdate()
     {
@@ -52,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
     }

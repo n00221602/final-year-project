@@ -1644,8 +1644,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33226264}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22975294, y: 0, z: 0, w: 0.973249}
-  m_LocalPosition: {x: 0.000005722046, y: 0, z: 0}
+  m_LocalRotation: {x: 0.34432575, y: 0, z: 0, w: 0.9388503}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -10406,7 +10406,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineOrbitalTransposer
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2, z: -4}
+  m_FollowOffset: {x: 0, y: 3.39, z: -4}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -31503,13 +31503,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.8186512, z: -0.5742911, w: 0}
+  m_LocalRotation: {x: 0, y: 0.7660445, z: -0.6427876, w: 0}
   m_LocalPosition: {x: -401.21573, y: 2.3477707, z: -227.14857}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 70.1, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 80, y: 180, z: 0}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33008,8 +33008,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 446850303}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18426846, y: 0, z: 0, w: 0.98287594}
-  m_LocalPosition: {x: 0.000005722046, y: 0, z: 0}
+  m_LocalRotation: {x: 0.3003163, y: 0, z: 0, w: 0.9538397}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -41286,7 +41286,7 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_YAxis:
-    Value: 0.5
+    Value: 1
     m_SpeedMode: 0
     m_MaxSpeed: 2
     m_AccelTime: 0.2
@@ -41340,9 +41340,9 @@ MonoBehaviour:
   m_BindingMode: 4
   m_SplineCurvature: 0.3
   m_Orbits:
-  - m_Height: 3
-    m_Radius: 3
-  - m_Height: 2
+  - m_Height: 3.39
+    m_Radius: 4
+  - m_Height: 3.5
     m_Radius: 4
   - m_Height: 1
     m_Radius: 3
@@ -41360,7 +41360,7 @@ Transform:
   m_GameObject: {fileID: 563574149}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -18.65, y: 2, z: -170.25}
+  m_LocalPosition: {x: -18.65, y: 3.39, z: -170.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -87594,8 +87594,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1170632874}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09902823, y: 0, z: 0, w: 0.99508464}
-  m_LocalPosition: {x: 0.000005722046, y: 0, z: 0}
+  m_LocalRotation: {x: 0.24351773, y: 0, z: 0, w: 0.96989644}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -89674,7 +89674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineOrbitalTransposer
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2, z: -4}
+  m_FollowOffset: {x: 0, y: 3.39, z: -4}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -109647,8 +109647,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1460576170}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09902827, y: 0.0000000297137, z: -0.0000000029570308, w: 0.99508464}
-  m_LocalPosition: {x: 2.0525112, y: 2.001, z: -5.824112}
+  m_LocalRotation: {x: 0.34432566, y: 0, z: 0, w: 0.9388503}
+  m_LocalPosition: {x: 2.0525112, y: 3.391, z: -5.824112}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -126476,7 +126476,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineOrbitalTransposer
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2, z: -4}
+  m_FollowOffset: {x: 0, y: 3.39, z: -4}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -127171,7 +127171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c742af16e770e44a851fc2b0e98df5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 5
+  moveSpeed: 2
   groundDrag: 5
   playerHeight: 2
   whatIsGround:

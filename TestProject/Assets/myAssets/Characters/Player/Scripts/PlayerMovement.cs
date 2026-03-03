@@ -64,10 +64,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+
+        //Snap rotation instantly to face the movement direction
+
+        if (moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
     }
+
 
     private void SpeedControl()
     {

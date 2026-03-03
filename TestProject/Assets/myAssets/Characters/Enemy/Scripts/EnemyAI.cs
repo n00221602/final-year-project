@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
     //public Animator animator;
     public Transform player;
     private NavMeshAgent agent;
+    public Animator animator;
     public enum State
     {
         Idle,
@@ -46,8 +47,8 @@ public class EnemyAI : MonoBehaviour
 
     void EnemyIdle()
     {
+        animator.SetBool("isMoving", false);
         agent.isStopped = true;
-        Debug.Log("Currently Idle");
         playerDistance = Vector3.Distance(player.position, transform.position);
         if (playerDistance < 10f)
         {
@@ -58,8 +59,8 @@ public class EnemyAI : MonoBehaviour
 
     void EnemyMoving()
     {
+        animator.SetBool("isMoving", true);
         agent.isStopped = false;
-        Debug.Log("Player within range");
         agent.transform.LookAt(player);
         agent.SetDestination(player.position);
 
@@ -77,7 +78,7 @@ public class EnemyAI : MonoBehaviour
 
     void EnemyAttack()
     {
-        Debug.Log("Attacking");
+        animator.SetBool("isMoving", false);
         agent.isStopped = true;
         if (playerDistance > 2f)
         {

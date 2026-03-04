@@ -3,10 +3,10 @@ using UnityEngine.AI;
 
 public class LaserEnemyAI : MonoBehaviour
 {
-    //public Animator animator;
     public Transform player;
     private NavMeshAgent agent;
     public Animator animator;
+    public HealthSystem playerHealth;
 
     public LineRenderer laserLineRenderer;
     private Vector3 laserOffset = new Vector3(0, 1f, 0);
@@ -16,9 +16,15 @@ public class LaserEnemyAI : MonoBehaviour
         Aiming,
         Shooting
     }
-
-    public State state;
+    public State currentState;
     float playerDistance;
+
+    public float timer;
+
+    private float dodgeWindow = 1f;
+    private float aimTime = 4f;
+    private Vector3 lastPlayerPosition;
+
 
     //Add Melee and Range type enemies later on.
 
@@ -34,7 +40,7 @@ public class LaserEnemyAI : MonoBehaviour
 
     void Update()
     {
-        switch (state)
+        switch (currentState)
         {
             case State.Idle:
                 LaserIdle();
@@ -56,7 +62,7 @@ public class LaserEnemyAI : MonoBehaviour
         laserLineRenderer.enabled = false;
         if (playerDistance < 10f)
         {
-            LaserAiming();
+            currentState = State.Aiming;
         }
 
     }
@@ -64,23 +70,52 @@ public class LaserEnemyAI : MonoBehaviour
     void LaserAiming()
     {
         animator.SetBool("isAiming", true);
-        agent.isStopped = true;
         agent.transform.LookAt(player);
         laserLineRenderer.SetPosition(0, transform.position + laserOffset);
         laserLineRenderer.SetPosition(1, player.position + laserOffset);
         laserLineRenderer.enabled = true;
 
-        if (playerDistance < 2f)
+        timer += Time.deltaTime;
+        Debug.Log("Timer: " + timer);
+        if (timer >= dodgeWindow)
         {
-            LaserShooting();
+            if (lastPlayerPosition == Vector3.zero) // Only capture once
+            {
+                lastPlayerPosition = player.position;
+            }
+
+            agent.transform.LookAt(lastPlayerPosition);
+            laserLineRenderer.SetPosition(1, lastPlayerPosition + laserOffset);
+
+        }
+        if (timer >= aimTime)
+        {
+            timer = 0f;
+            currentState = State.Shooting;
         }
     }
 
     void LaserShooting()
     {
-        laserLineRenderer.enabled = false;
+        Debug.Log("SHOOOOOOTING");
+        laserLineRenderer.material.color = Color.orange;
         animator.SetBool("isAiming", false);
         animator.SetBool("isShooting", true);
-        agent.isStopped = true;
+
+        Vector3 raycastStart = laserLineRenderer.GetPosition(0);
+        Vector3 raycastEnd = laserLineRenderer.GetPosition(1);
+
+        // Check for collision along the laser line
+        RaycastHit hit;
+        if (Physics.Linecast(raycastStart, raycastEnd, out hit))
+        {
+            // Check if player was hit
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.Log("PLAYER DAMAGED");
+                playerHealth.TakeDamage(0.1f); // Adjust damage value as needed
+
+            }
+        }
     }
 }

@@ -8,12 +8,11 @@ public class HealthSystem : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        health.fillAmount = 0.6f;
+        //health.fillAmount = 0.6f;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(float damage)
     {
-
+        health.fillAmount -= damage;
     }
 }

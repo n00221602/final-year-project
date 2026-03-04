@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        Debug.Log(horizontalInput + "<H>V" + verticalInput);
+        //Debug.Log(horizontalInput + "<H>V" + verticalInput);
     }
 
     private void MovePlayer()
@@ -117,15 +117,7 @@ public class PlayerMovement : MonoBehaviour
         dashing = true;
         animator.SetBool("isDashing", true);
         moveSpeed = dashSpeed;
-        //Vector3 dash = orientation.forward * dashForce;
-        //rb.AddForce(dash, ForceMode.Impulse);
-
-        //if (horizontalInput == 0 || verticalInput == 0)
-        //{
-        //    //playerFacing = orientation.forward;
-        //    rb.AddForce(orientation.forward * moveSpeed * 10, ForceMode.Impulse);
-        //}
-        Debug.Log("DASH");
+        //Debug.Log("DASH");
 
         Invoke(nameof(ResetDash), dashDuration);
 
@@ -136,5 +128,12 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isDashing", false);
         dashing = false;
         moveSpeed = 4f; // Reset to normal speed
+        //Invoke(nameof(ResetDashCooldown), dashCooldown);
     }
+
+    //private void ResetDashCooldown()
+    //{
+
+    //    dashCooldownTimer = 0f;
+    //}
 }

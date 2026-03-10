@@ -6,8 +6,6 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed;
     public float groundDrag;
 
-    public GameObject test;
-
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
@@ -55,6 +53,12 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.linearDamping = 0;
 
+        //Stop sliding immediately when no input
+        if (horizontalInput == 0 && verticalInput == 0)
+        {
+            rb.linearVelocity = new Vector3(0f, 0, 0f);
+        }
+
         //Animations
         if (horizontalInput != 0 || verticalInput != 0)
         {
@@ -70,11 +74,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Dash();
         }
-
-        //if (dashing)
-        //{
-        //    moveSpeed = dashSpeed;
-        //}
     }
     private void FixedUpdate()
     {
@@ -92,8 +91,8 @@ public class PlayerMovement : MonoBehaviour
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        //Snap rotation instantly to face the movement direction
 
+        //Snap rotation instantly to face the movement direction
         if (moveDirection != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(moveDirection);

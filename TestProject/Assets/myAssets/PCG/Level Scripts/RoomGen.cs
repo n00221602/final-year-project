@@ -45,6 +45,9 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public Quaternion wallRotation;
     [HideInInspector] public Quaternion doorRotation;
 
+    //PHYSICS MATERIAL
+    public PhysicsMaterial physicsMaterial;
+
     void Start()
     {
         RoomGeneration();
@@ -75,12 +78,20 @@ public class RoomGen : MonoBehaviour
         int cornerTarget = 1;
         int wallTarget = 2;
         int floorTarget = 3;
+        int doorTarget = 4;
+        int outputTarget = 5;
 
         //Target bools used for checking neighbouring tiles.
         bool top;
         bool bottom;
         bool left;
         bool right;
+
+        //Target bools for checking door post
+        bool doorTop;
+        bool doorBottom;
+        bool doorLeft;
+        bool doorRight;
 
         //Parent Object. The instantiated prefabs are placed into this parent.
         roomParent1 = new GameObject("Room");
@@ -146,13 +157,12 @@ public class RoomGen : MonoBehaviour
                             if (top || bottom || left || right)
                             {
                                 Instantiate(innerCorner, position, cornerRotation, roomParent[i].transform);
-                                break;
                             }
                             else
                             {
                                 Instantiate(corner, position, cornerRotation, roomParent[i].transform);
-                                break;
                             }
+                            break;
 
 
 
@@ -164,6 +174,16 @@ public class RoomGen : MonoBehaviour
                             bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == floorTarget);
                             left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
                             right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
+
+                            doorTop = (y > 0) && (layoutList[i][y - 1, x] == doorTarget || layoutList[i][y - 1, x] == outputTarget);
+                            doorBottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == doorTarget || layoutList[i][y + 1, x] == outputTarget);
+                            doorLeft = (x > 0) && (layoutList[i][y, x - 1] == doorTarget || layoutList[i][y, x - 1] == outputTarget);
+                            doorRight = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == doorTarget || layoutList[i][y, x + 1] == outputTarget);
+
+                            if (doorTop || doorBottom || doorLeft || doorRight)
+                            {
+                                break;
+                            }
 
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
                             if (top)
@@ -184,6 +204,8 @@ public class RoomGen : MonoBehaviour
                             }
                             Instantiate(outerWall, position, wallRotation, roomParent[i].transform);
                             break;
+
+
 
                         //Create floors. floors = 3
                         case 3:
@@ -211,9 +233,48 @@ public class RoomGen : MonoBehaviour
                     }
                 }
             }
+            CombineRoomMeshes(roomParent[i]);
         }
-
         //Invokes event listener in FloorCreator.cs to run once room generation code is complete.
         OnRoomGenComplete.Invoke();
     }
+
+    void CombineRoomMeshes(GameObject roomParent)
+    {
+        // Get all MeshFilters from direct children only (not nested)
+        MeshFilter[] meshFilters = roomParent.GetComponentsInChildren<MeshFilter>();
+
+        Debug.Log($"Found {meshFilters.Length} MeshFilters in {roomParent.name}");
+
+        if (meshFilters.Length == 0)
+        {
+            Debug.LogWarning($"No MeshFilters found in {roomParent.name}!");
+            return;
+        }
+
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+
+        for (int i = 0; i < meshFilters.Length; i++)
+        {
+            Mesh mesh = meshFilters[i].sharedMesh;
+            combine[i].mesh = mesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+
+        }
+
+        // Create combined mesh
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.CombineMeshes(combine, true, true);
+        combinedMesh.RecalculateNormals();
+        combinedMesh.RecalculateBounds();
+
+        // Add MeshCollider to the roomParent
+        MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
+        meshCollider.sharedMesh = combinedMesh;
+
+        Debug.Log($"Combined {meshFilters.Length} meshes. Total vertices: {combinedMesh.vertexCount}");
+    }
+
+
 }

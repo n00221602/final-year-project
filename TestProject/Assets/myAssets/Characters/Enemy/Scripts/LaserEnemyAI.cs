@@ -21,7 +21,7 @@ public class LaserEnemyAI : MonoBehaviour
 
     public float timer;
 
-    private float dodgeWindow = 1f;
+    private float dodgeWindow = 3.5f;
     private float aimTime = 4f;
     private Vector3 lastPlayerPosition;
 

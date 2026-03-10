@@ -10,7 +10,9 @@ public class RoomGen : MonoBehaviour
     public GameObject corner;
     public GameObject innerCorner;
     public GameObject door;
+    public GameObject output;
 
+    //Call the LayoutGen script
     public LayoutGen roomLayout;
 
     //PARENT OBJECTS
@@ -44,9 +46,10 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public Quaternion cornerRotation;
     [HideInInspector] public Quaternion wallRotation;
     [HideInInspector] public Quaternion doorRotation;
+    [HideInInspector] public Quaternion outputRotation;
 
     //PHYSICS MATERIAL
-    public PhysicsMaterial physicsMaterial;
+    //public PhysicsMaterial physicsMaterial;
 
     void Start()
     {
@@ -230,6 +233,31 @@ public class RoomGen : MonoBehaviour
                             }
                             Instantiate(door, position, doorRotation, roomParent[i].transform);
                             break;
+
+                        case 5:
+                            top = (y > 0) && (layoutList[i][y - 1, x] == floorTarget);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == floorTarget);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
+                            //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
+                            if (top)
+                            {
+                                outputRotation = Quaternion.Euler(0, 270, 0);
+                            }
+                            else if (bottom)
+                            {
+                                outputRotation = Quaternion.Euler(0, 90, 0);
+                            }
+                            else if (left)
+                            {
+                                outputRotation = Quaternion.Euler(0, 180, 0);
+                            }
+                            else if (right)
+                            {
+                                outputRotation = Quaternion.Euler(0, 0, 0);
+                            }
+                            Instantiate(output, position, outputRotation, roomParent[i].transform);
+                            break;
                     }
                 }
             }
@@ -244,16 +272,7 @@ public class RoomGen : MonoBehaviour
         // Get all MeshFilters from direct children only (not nested)
         MeshFilter[] meshFilters = roomParent.GetComponentsInChildren<MeshFilter>();
 
-        Debug.Log($"Found {meshFilters.Length} MeshFilters in {roomParent.name}");
-
-        if (meshFilters.Length == 0)
-        {
-            Debug.LogWarning($"No MeshFilters found in {roomParent.name}!");
-            return;
-        }
-
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
 
         for (int i = 0; i < meshFilters.Length; i++)
         {
@@ -272,9 +291,5 @@ public class RoomGen : MonoBehaviour
         // Add MeshCollider to the roomParent
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
         meshCollider.sharedMesh = combinedMesh;
-
-        Debug.Log($"Combined {meshFilters.Length} meshes. Total vertices: {combinedMesh.vertexCount}");
     }
-
-
 }

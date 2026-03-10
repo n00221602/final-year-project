@@ -12,6 +12,8 @@ public class FloorCreator : MonoBehaviour
     Vector3 entryPosition;
     Vector3 exitPosition;
 
+    public Vector3[] outputPosArray;
+
     bool top;
     bool bottom;
     bool left;
@@ -40,6 +42,9 @@ public class FloorCreator : MonoBehaviour
 
     void CreateFloorLayout()
     {
+        // Initialize the array with the correct size
+        outputPosArray = new Vector3[roomGen.roomParent.Length];
+
         for (int i = 0; i < roomGen.roomParent.Length - 1; i++)
         {
             if (roomGen.roomParent[i] == null || roomGen.roomParent[i + 1] == null)
@@ -74,6 +79,7 @@ public class FloorCreator : MonoBehaviour
                     {
                         //Debug.Log("exit found at" + (x, y));
                         exitPosition = new Vector3(x, 0, -y);
+                        outputPosArray[i] = exitPosition;
                         break;
                     }
                 }
@@ -130,7 +136,13 @@ public class FloorCreator : MonoBehaviour
                 //roomGen.roomParent[i + 1].transform.rotation = roomRotation;
             }
         }
+        //// Debug array contents
+        //for (int i = 0; i < outputPosArray.Length; i++)
+        //{
+        //    Debug.Log($"OUTPUT ARRAY[{i}]: {outputPosArray[i]}");
+        //}
     }
+
 }
 
 

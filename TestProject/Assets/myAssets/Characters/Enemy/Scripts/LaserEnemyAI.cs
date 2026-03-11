@@ -36,6 +36,9 @@ public class LaserEnemyAI : MonoBehaviour
             Debug.LogError("NavMeshAgent component not found");
         }
 
+        player = GameObject.Find("Player").transform;
+        playerHealth = GameObject.Find("Player UI").GetComponent<HealthSystem>();
+
     }
 
     void Update()

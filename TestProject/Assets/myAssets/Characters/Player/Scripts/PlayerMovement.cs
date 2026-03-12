@@ -63,10 +63,12 @@ public class PlayerMovement : MonoBehaviour
         if (horizontalInput != 0 || verticalInput != 0)
         {
             animator.SetBool("isMoving", true);
+            animator.SetBool("isIdle", false);
         }
         else
         {
             animator.SetBool("isMoving", false);
+            animator.SetBool("isIdle", true);
         }
 
         //Dash Ability

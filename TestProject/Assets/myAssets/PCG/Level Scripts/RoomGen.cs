@@ -178,6 +178,7 @@ public class RoomGen : MonoBehaviour
                             left = (x > 0) && (layoutList[i][y, x - 1] == floorTarget);
                             right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == floorTarget);
 
+                            //Since doors are 1x3, dont place walls next to doors or outputs.
                             doorTop = (y > 0) && (layoutList[i][y - 1, x] == doorTarget || layoutList[i][y - 1, x] == outputTarget);
                             doorBottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == doorTarget || layoutList[i][y + 1, x] == outputTarget);
                             doorLeft = (x > 0) && (layoutList[i][y, x - 1] == doorTarget || layoutList[i][y, x - 1] == outputTarget);

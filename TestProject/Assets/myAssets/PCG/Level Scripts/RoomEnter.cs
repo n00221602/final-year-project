@@ -130,10 +130,6 @@ public class RoomEnter : MonoBehaviour
             {
                 for (int x = 0; x < cols; x++)
                 {
-                    //top = (y > 0) && (activeRoom[y - 1, x] == doorTarget || activeRoom[y - 1, x] == outputTarget);
-                    //bottom = (y < rows - 1) && (activeRoom[y + 1, x] == doorTarget || activeRoom[y + 1, x] == outputTarget);
-                    //left = (x > 0) && (activeRoom[y, x - 1] == doorTarget || activeRoom[y, x - 1] == outputTarget);
-                    //right = (x < cols - 1) && (activeRoom[y, x + 1] == doorTarget || activeRoom[y, x + 1] == outputTarget);
                     enemyClose = enemy.transform.position - spawnPoint == noDif;
 
 

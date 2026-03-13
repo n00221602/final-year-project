@@ -1,22 +1,44 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatSystem : MonoBehaviour
 {
     //TO-DO
-    //Handle inputs. Primary (right hand) and secondary (left hand) attacks.
-    //Handle combat animations. 
+    //Handle inputs. Primary (right hand) and secondary (left hand) attacks. DONE
+    //Handle combat animations. ALSO look into root motion.
     //For hitboxes, enable the hitbox depending on the animation frame.
 
     public Animator animator;
-    public PlayerMovement player;
+    public PlayerMovement playerMovement;
+    public RoomEnter roomEnter;
+
+    public Transform player;
+    public GameObject primaryHitbox;
+
+    float closestEnemyDistance;
+    GameObject closestEnemy;
+
+    List<Vector3> enemyPos;
+    List<float> enemyDistances;
+    GameObject[] enemyCount;
+    float enemyDif;
+
+    public bool isAttacking = false;
+
+
     void Start()
     {
         animator = GetComponent<Animator>();
-        player = GetComponent<PlayerMovement>();
+        playerMovement = GetComponent<PlayerMovement>();
+        roomEnter = GetComponent<RoomEnter>();
 
         //Left click for primary attack, right click for secondary attack.
         Input.GetKeyDown(KeyCode.Mouse0);
         Input.GetKeyUp(KeyCode.Mouse1);
+        primaryHitbox.SetActive(false);
+
+
     }
 
     // Update is called once per frame
@@ -31,17 +53,166 @@ public class CombatSystem : MonoBehaviour
         {
             SecondaryAttack();
         }
+
+        FindClosestEnemy();
     }
 
+    //HITBOX CHECKS//
+    //private void OnTriggerEnter(Collider collider)
+    //{
+    //    if (collider.gameObject.CompareTag("Enemy"))
+    //    {
+    //        Debug.Log("HIT ENEMY");
+    //    }
+    //}
+
+
+    //Received from HitboxReporter when the hitbox detects a collision with an enemy.
+    public void OnHitboxHit(GameObject hitTarget)
+    {
+        Debug.Log("Hitbox struck: " + hitTarget.name);
+
+        // Grab the health script of the enemy and apply damage here
+        // EnemyHealth enemyStats = hitTarget.GetComponent<EnemyHealth>();
+        // if(enemyStats != null) { enemyStats.TakeDamage(10); }
+    }
+
+
+    //ANIMATIONS//
     void PrimaryAttack()
     {
-        Debug.Log("Primary Attack");
+        if (isAttacking) return;
+        isAttacking = true;
+
+        if (closestEnemyDistance < 5f && closestEnemy != null)
+        {
+            Vector3 lookPosition = closestEnemy.transform.position;
+            lookPosition.y = player.transform.position.y;
+            player.transform.LookAt(lookPosition);
+            //player.transform.position = Vector3.MoveTowards(player.transform.position, closestEnemy.transform.position, 10f * Time.deltaTime);
+            //playerMovement.rb.AddForce(closestEnemy.transform.position * playerMovement.moveSpeed * 10f, ForceMode.Force);
+
+            StartCoroutine(LockOn(closestEnemy.transform.position));
+
+        }
+
         animator.SetTrigger("AttackP");
+
     }
 
     void SecondaryAttack()
     {
-        Debug.Log("Secondary Attack");
+        if (isAttacking) return;
+        isAttacking = true;
+
+        if (closestEnemy != null)
+        {
+            StartCoroutine(FaceEnemy(closestEnemy.transform.position, 0.15f));
+        }
+
         animator.SetTrigger("AttackS");
+    }
+
+
+    //COMBAT LOGIC//
+    void FindClosestEnemy()
+    {
+        enemyCount = GameObject.FindGameObjectsWithTag("Enemy");
+
+        //Debug.Log("Enemy count: " + enemyCount.Length);
+        closestEnemyDistance = Mathf.Infinity;
+        closestEnemy = null;
+
+        //Check distance for each enemy
+        foreach (GameObject enemy in enemyCount)
+        {
+            enemyDif = Vector3.Distance(player.position, enemy.transform.position);
+
+            if (enemyDif < closestEnemyDistance)
+            {
+                closestEnemyDistance = enemyDif;
+                closestEnemy = enemy;
+                //Debug.Log("Closest Enemy Distance: " + closestEnemyDistance);
+            }
+        }
+    }
+
+    private IEnumerator LockOn(Vector3 enemyPosition)
+    {
+        float lockOnTime = 0.15f;
+        float elapsedTime = 0f;
+
+        Vector3 direction = (enemyPosition - player.position).normalized;
+        direction.y = 0f;
+
+        // Target rotation setup
+        Quaternion startRot = player.rotation;
+        Quaternion targetRot = Quaternion.LookRotation(direction);
+
+        Vector3 destination = enemyPosition - (direction * 0.5f);
+        Vector3 startingPos = playerMovement.rb.position; // Use Rigidbody position for accuracy
+
+        while (elapsedTime < lockOnTime)
+        {
+            // 1. Smoothly Rotate
+            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime / lockOnTime);
+
+            // 2. Smoothly Move
+            Vector3 nextPos = Vector3.Lerp(startingPos, destination, elapsedTime / lockOnTime);
+            playerMovement.rb.MovePosition(nextPos);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Snap perfectly at the end to ensure it didn't fall short
+        player.rotation = targetRot;
+    }
+
+    // This handles ONLY Rotation over time (for secondary attacks)
+    private IEnumerator FaceEnemy(Vector3 enemyPosition, float turnDuration)
+    {
+        float elapsedTime = 0f;
+
+        Vector3 direction = (enemyPosition - player.position).normalized;
+        direction.y = 0f;
+
+        Quaternion startRot = player.rotation;
+        Quaternion targetRot = Quaternion.LookRotation(direction);
+
+        while (elapsedTime < turnDuration)
+        {
+            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime / turnDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        player.rotation = targetRot;
+    }
+
+    //ANIMATION EVENT FUNCTIONS//
+
+    //Called at start of swing
+    void PrimaryHitboxOn()
+    {
+        Debug.Log("SWING");
+        primaryHitbox.SetActive(true);
+    }
+
+    //Called at end of swing
+    void PrimaryHitboxOff()
+    {
+        primaryHitbox.SetActive(false);
+        isAttacking = false;
+    }
+
+    void SecondaryHitboxOn()
+    {
+        Debug.Log("BANG");
+    }
+
+    void SecondaryHitboxOff()
+    {
+        isAttacking = false;
     }
 }

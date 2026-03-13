@@ -284,7 +284,7 @@ public class RoomGen : MonoBehaviour
         }
 
         // Create combined mesh
-        Mesh combinedMesh = new Mesh();
+        Mesh combinedMesh = new();
         combinedMesh.CombineMeshes(combine, true, true);
         combinedMesh.RecalculateNormals();
         combinedMesh.RecalculateBounds();

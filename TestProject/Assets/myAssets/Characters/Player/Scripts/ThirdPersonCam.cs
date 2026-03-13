@@ -6,9 +6,10 @@ public class ThirdPersonCam : MonoBehaviour
     public Transform orientation;
     public Transform player;
     public Transform playerObj;
-    public Rigidbody rb;
 
     public float rotationSpeed;
+
+    public CombatSystem combatSystem;
 
     private void Start()
     {
@@ -27,7 +28,9 @@ public class ThirdPersonCam : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        if (inputDir != Vector3.zero)
+        if (inputDir != Vector3.zero && (combatSystem != null && !combatSystem.isAttacking))
+        {
             playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+        }
     }
 }

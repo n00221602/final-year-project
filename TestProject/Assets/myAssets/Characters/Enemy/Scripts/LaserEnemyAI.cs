@@ -79,7 +79,7 @@ public class LaserEnemyAI : MonoBehaviour
         laserLineRenderer.enabled = true;
 
         timer += Time.deltaTime;
-        Debug.Log("Timer: " + timer);
+        //Debug.Log("Timer: " + timer);
         if (timer >= dodgeWindow)
         {
             if (lastPlayerPosition == Vector3.zero) // Only capture once
@@ -100,7 +100,7 @@ public class LaserEnemyAI : MonoBehaviour
 
     void LaserShooting()
     {
-        Debug.Log("SHOOOOOOTING");
+        //Debug.Log("SHOOOOOOTING");
         laserLineRenderer.material.color = Color.orange;
         animator.SetBool("isAiming", false);
         animator.SetBool("isShooting", true);
@@ -115,7 +115,7 @@ public class LaserEnemyAI : MonoBehaviour
             // Check if player was hit
             if (hit.collider.CompareTag("Player"))
             {
-                Debug.Log("PLAYER DAMAGED");
+                //Debug.Log("PLAYER DAMAGED");
                 playerHealth.TakeDamage(0.1f); // Adjust damage value as needed
 
             }

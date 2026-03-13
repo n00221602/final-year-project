@@ -27,16 +27,18 @@ public class PlayerMovement : MonoBehaviour
     float horizontalInput;
     float verticalInput;
 
-    Vector3 moveDirection;
+    [HideInInspector] public Vector3 moveDirection;
 
-    Rigidbody rb;
+    [HideInInspector] public Rigidbody rb;
 
     public Animator animator;
+    public CombatSystem combatSystem;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        combatSystem = GetComponent<CombatSystem>();
 
     }
 
@@ -44,7 +46,10 @@ public class PlayerMovement : MonoBehaviour
     {
         //Grounded check
         isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+
         MyInput();
+
+
         SpeedControl();
 
         //Handle drag
@@ -72,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         //Dash Ability
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !combatSystem.isAttacking)
         {
             Dash();
         }
@@ -91,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
+        if (combatSystem != null && combatSystem.isAttacking) return;
+
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 

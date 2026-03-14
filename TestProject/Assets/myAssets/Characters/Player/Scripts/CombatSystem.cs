@@ -12,6 +12,7 @@ public class CombatSystem : MonoBehaviour
     public Animator animator;
     public PlayerMovement playerMovement;
     public RoomEnter roomEnter;
+    public HealthSystem healthSystem;
 
     public Transform player;
     public GameObject primaryHitbox;
@@ -68,14 +69,7 @@ public class CombatSystem : MonoBehaviour
 
 
     //Received from HitboxReporter when the hitbox detects a collision with an enemy.
-    public void OnHitboxHit(GameObject hitTarget)
-    {
-        Debug.Log("Hitbox struck: " + hitTarget.name);
 
-        // Grab the health script of the enemy and apply damage here
-        // EnemyHealth enemyStats = hitTarget.GetComponent<EnemyHealth>();
-        // if(enemyStats != null) { enemyStats.TakeDamage(10); }
-    }
 
 
     //ANIMATIONS//
@@ -197,6 +191,14 @@ public class CombatSystem : MonoBehaviour
     {
         Debug.Log("SWING");
         primaryHitbox.SetActive(true);
+    }
+
+    public void OnHitboxHit(GameObject hitEnemy)
+    {
+        Debug.Log("Hitbox struck: " + hitEnemy.name);
+
+        //Get enemy's health system and apply damage
+        hitEnemy.GetComponent<HealthSystem>().TakeDamage(0.1f);
     }
 
     //Called at end of swing

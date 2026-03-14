@@ -3,14 +3,16 @@ using UnityEngine;
 public class HitboxReporter : MonoBehaviour
 {
     public CombatSystem combatSystem; // Drag Player into here
+    [HideInInspector] public GameObject hitEnemy;
 
     private void OnTriggerEnter(Collider other)
     {
+        //If the hitbox comes in contact with an enemy, run the OnHitboxHit function from CombatSystem.
         if (other.CompareTag("Enemy"))
         {
-            // Now you KNOW it was the hand that hit them!
             Debug.Log("HITBOX DETECTED");
-            combatSystem.OnHitboxHit(other.gameObject); // Call a method in CombatSystem to handle the hit
+            combatSystem.OnHitboxHit(other.gameObject);
+
         }
     }
 }

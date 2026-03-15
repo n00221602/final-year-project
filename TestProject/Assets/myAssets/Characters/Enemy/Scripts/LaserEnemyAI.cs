@@ -6,7 +6,7 @@ public class LaserEnemyAI : MonoBehaviour
     public Transform player;
     private NavMeshAgent agent;
     public Animator animator;
-    public HealthSystem playerHealth;
+    public HealthSystem healthSystem;
 
     public LineRenderer laserLineRenderer;
     private Vector3 laserOffset = new Vector3(0, 1f, 0);
@@ -14,7 +14,8 @@ public class LaserEnemyAI : MonoBehaviour
     {
         Idle,
         Aiming,
-        Shooting
+        Shooting,
+        Cooldown
     }
     public State currentState;
     float playerDistance;
@@ -24,6 +25,8 @@ public class LaserEnemyAI : MonoBehaviour
     private float dodgeWindow = 3.5f;
     private float aimTime = 4f;
     private Vector3 lastPlayerPosition;
+
+    public GameObject laserGun;
 
 
     //Add Melee and Range type enemies later on.
@@ -37,7 +40,7 @@ public class LaserEnemyAI : MonoBehaviour
         }
 
         player = GameObject.Find("Player").transform;
-        playerHealth = GameObject.Find("Player UI").GetComponent<HealthSystem>();
+        healthSystem = GameObject.Find("Player UI").GetComponent<HealthSystem>();
 
     }
 
@@ -54,12 +57,16 @@ public class LaserEnemyAI : MonoBehaviour
             case State.Shooting:
                 LaserShooting();
                 break;
+            case State.Cooldown:
+                LaserCooldown();
+                break;
         }
     }
 
     void LaserIdle()
     {
-        animator.SetBool("isAiming", false);
+        animator.SetBool("isIdle", true);
+        animator.SetBool("isOnCooldown", false);
         agent.isStopped = true;
         playerDistance = Vector3.Distance(player.position, transform.position);
         laserLineRenderer.enabled = false;
@@ -72,24 +79,46 @@ public class LaserEnemyAI : MonoBehaviour
 
     void LaserAiming()
     {
+        animator.SetBool("isIdle", false);
         animator.SetBool("isAiming", true);
-        agent.transform.LookAt(player);
-        laserLineRenderer.SetPosition(0, transform.position + laserOffset);
-        laserLineRenderer.SetPosition(1, player.position + laserOffset);
-        laserLineRenderer.enabled = true;
 
-        timer += Time.deltaTime;
-        //Debug.Log("Timer: " + timer);
-        if (timer >= dodgeWindow)
+        Vector3 playerDirection = player.transform.position;
+        playerDirection.y = transform.position.y;
+        agent.transform.LookAt(playerDirection);
+
+        laserLineRenderer.SetPosition(0, laserGun.transform.position);
+        laserLineRenderer.SetPosition(1, player.position + new Vector3(0, laserGun.transform.position.y, 0));
+        laserLineRenderer.enabled = true;
+        laserLineRenderer.material.color = Color.red;
+
+        Vector3 raycastStart = laserLineRenderer.GetPosition(0);
+        Vector3 raycastEnd = laserLineRenderer.GetPosition(1);
+
+        RaycastHit hit;
+        if (Physics.Linecast(raycastStart, raycastEnd, out hit))
         {
-            if (lastPlayerPosition == Vector3.zero) // Only capture once
+            //If raycast hits an obstacle, set the laser end point to the hit point
+            if (!hit.collider.CompareTag("Player"))
             {
-                lastPlayerPosition = player.position;
+                laserLineRenderer.SetPosition(1, hit.point);
             }
 
-            agent.transform.LookAt(lastPlayerPosition);
-            laserLineRenderer.SetPosition(1, lastPlayerPosition + laserOffset);
 
+            timer += Time.deltaTime;
+            //Debug.Log("Timer: " + timer);
+            if (timer >= dodgeWindow)
+            {
+                if (lastPlayerPosition == Vector3.zero)
+                {
+                    lastPlayerPosition = player.position;
+                }
+
+                agent.transform.LookAt(lastPlayerPosition);
+                laserLineRenderer.material.color = Color.orange;
+                laserLineRenderer.SetPosition(1, lastPlayerPosition + new Vector3(0, laserGun.transform.position.y, 0));
+                laserLineRenderer.enabled = false;
+
+            }
         }
         if (timer >= aimTime)
         {
@@ -101,6 +130,7 @@ public class LaserEnemyAI : MonoBehaviour
     void LaserShooting()
     {
         //Debug.Log("SHOOOOOOTING");
+        laserLineRenderer.enabled = true;
         laserLineRenderer.material.color = Color.orange;
         animator.SetBool("isAiming", false);
         animator.SetBool("isShooting", true);
@@ -108,17 +138,45 @@ public class LaserEnemyAI : MonoBehaviour
         Vector3 raycastStart = laserLineRenderer.GetPosition(0);
         Vector3 raycastEnd = laserLineRenderer.GetPosition(1);
 
+        timer += Time.deltaTime;
+
         // Check for collision along the laser line
         RaycastHit hit;
         if (Physics.Linecast(raycastStart, raycastEnd, out hit))
         {
+            if (!hit.collider.CompareTag("Player"))
+            {
+                laserLineRenderer.SetPosition(1, hit.point);
+            }
             // Check if player was hit
             if (hit.collider.CompareTag("Player"))
             {
                 //Debug.Log("PLAYER DAMAGED");
-                playerHealth.TakeDamage(0.1f); // Adjust damage value as needed
+                healthSystem.TakeDamage(0.1f);
+                healthSystem.PlayerGracePeriod(agent);
 
             }
+        }
+
+        //Once time is up, deactivate laser and reset to idle
+        if (timer >= 0.8f)
+        {
+            laserLineRenderer.enabled = false;
+            currentState = State.Cooldown;
+        }
+    }
+
+    void LaserCooldown()
+    {
+        animator.SetBool("isShooting", false);
+        animator.SetBool("isOnCooldown", true);
+        timer += Time.deltaTime;
+
+        if (timer >= 3f)
+        {
+            timer = 0f;
+            lastPlayerPosition = Vector3.zero;
+            currentState = State.Idle;
         }
     }
 }

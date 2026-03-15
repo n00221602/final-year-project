@@ -8,11 +8,9 @@ public class HitboxReporter : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //If the hitbox comes in contact with an enemy, run the OnHitboxHit function from CombatSystem.
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy") && combatSystem.hit != true)
         {
-            Debug.Log("HITBOX DETECTED");
             combatSystem.OnHitboxHit(other.gameObject);
-
         }
     }
 }

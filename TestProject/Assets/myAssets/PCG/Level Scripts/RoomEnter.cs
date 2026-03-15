@@ -8,7 +8,7 @@ public class RoomEnter : MonoBehaviour
     public FloorCreator floorCreator;
     public RoomGen roomGen;
     public GameObject enemy;
-    //Vector3 outputPos;
+    public GameObject[] doors;
 
     [HideInInspector] public int[,] activeRoom;
     [HideInInspector] public int rows;
@@ -21,6 +21,7 @@ public class RoomEnter : MonoBehaviour
     int randomIndex;
 
     bool isTriggered = false;
+    bool spawnEnemies = false;
 
     bool top;
     bool bottom;
@@ -33,15 +34,32 @@ public class RoomEnter : MonoBehaviour
 
     Vector3 spawnPoint;
     Vector3 noDif = new Vector3(0, 0, 0);
-    void Start()
+    Vector3 activeTrigger;
+    void Awake()
     {
+        roomGen.OnRoomGenComplete.AddListener(FindDoors);
+    }
+
+    void FindDoors()
+    {
+        doors = GameObject.FindGameObjectsWithTag("Door");
+        Debug.Log("DOOR LENGTH: " + doors.Length);
 
     }
+
     private void OnTriggerEnter(Collider collider)
     {
         //If a player makes contact with the room trigger, set bool to true and disable trigger. A bool is used to avoid multiple calls from the trigger.
         if (collider.gameObject.CompareTag("RoomTrigger"))
         {
+            activeTrigger = collider.gameObject.transform.localPosition;
+            Debug.Log("ACTIVE TRIGGER: " + activeTrigger);
+            //Get all doors and close them. This is to prevent the player from leaving the room before the enemies are spawned.
+            foreach (GameObject door in doors)
+            {
+                door.transform.position = new Vector3(door.transform.position.x, 2f, door.transform.position.z);
+            }
+
             isTriggered = true;
             collider.gameObject.SetActive(false);
         }
@@ -55,6 +73,13 @@ public class RoomEnter : MonoBehaviour
 
             RoomActive();
             isTriggered = false;
+        }
+
+        //Equaled to 2 for now, since 2 existing test enemies are in the scene.
+        if (spawnEnemies && GameObject.FindGameObjectsWithTag("Enemy").Length == 2)
+        {
+            spawnEnemies = false;
+            RoomCleared();
         }
     }
 
@@ -73,18 +98,20 @@ public class RoomEnter : MonoBehaviour
                 //The output position is a vector3, so we need to convert them back to their original [y,x] format to cross reference the indexes.
                 int yIndex = (int)-floorCreator.outputPosArray[j].z;
                 int xIndex = (int)floorCreator.outputPosArray[j].x;
+                Debug.Log(floorCreator.outputPosArray[j] + "<-OUTPUT POS ARRAY INDEX " + j);
+
 
 
                 //Checks if the indexs of the current output position are within the current layout's bounds.
                 if (yIndex >= 0 && yIndex < roomGen.layoutList[i].GetLength(0) && xIndex >= 0 && xIndex < roomGen.layoutList[i].GetLength(1))
                 {
                     //If the current layout index matches the output position, then the active room has been found. This layout and its parent is set to the active room.
-                    if (roomGen.layoutList[i][yIndex, xIndex] == 5)
+                    if (roomGen.layoutList[i][yIndex, xIndex] == 5 && floorCreator.outputPosArray[j] == activeTrigger)
                     {
-
+                        Debug.Log("OUTPUT FOUND AT: " + floorCreator.outputPosArray[j]);
                         activeRoom = roomGen.layoutList[i];
                         activeRoomParent = roomGen.roomParent[i];
-                        SpawnEnemy();
+                        LoadEnemy();
                         return;
                     }
                 }
@@ -92,8 +119,15 @@ public class RoomEnter : MonoBehaviour
         }
     }
 
+    void LoadEnemy()
+    {
+        float timer = 1f;
+        Invoke(nameof(SpawnEnemy), timer);
+    }
+
     void SpawnEnemy()
     {
+        spawnEnemies = true;
         //Count all the 3s in the layout and add them into an array. Then randomly select one of the 3s and spawn an enemy there.
         rows = activeRoom.GetLength(0);
         cols = activeRoom.GetLength(1);
@@ -151,12 +185,25 @@ public class RoomEnter : MonoBehaviour
 
             Instantiate(enemy, spawnPoint, Quaternion.identity, activeRoomParent.transform);
 
-            Debug.Log("SPAWN POINT: " + spawnPointList[randomIndex]);
-            Debug.Log("PARENT POS: " + activeRoomParent.transform.position);
-            Debug.Log("New SPAWN POINT: " + (spawnPointList[randomIndex] - activeRoomParent.transform.position));
+            //Debug.Log("SPAWN POINT: " + spawnPointList[randomIndex]);
+            //Debug.Log("PARENT POS: " + activeRoomParent.transform.position);
+            //Debug.Log("New SPAWN POINT: " + (spawnPointList[randomIndex] - activeRoomParent.transform.position));
 
         }
 
+    }
+
+    void RoomCleared()
+    {
+        activeRoom = null;
+        activeRoomParent = null;
+
+        foreach (GameObject door in doors)
+        {
+            door.transform.position = new Vector3(door.transform.position.x, -2f, door.transform.position.z);
+        }
+
+        Debug.Log("ROOM CLEARED");
     }
 }
 

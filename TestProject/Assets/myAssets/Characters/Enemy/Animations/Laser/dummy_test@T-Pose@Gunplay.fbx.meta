@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b4e3a1a2c3ef68047b97f85f778813e7
+guid: 60ae36960479bdb4aad08336a49675c0
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -29,7 +29,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: LaserAim3
+      takeName: mixamo.com
+      internalID: -203655887218126122
+      firstFrame: 30
+      lastFrame: 76
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: -13.5
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 0
+      keepOriginalPositionXZ: 1
+      heightFromFeet: 1
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -73,7 +102,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
@@ -324,7 +353,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:Base1:Male:transform28
-      parentName: Base1:Male:polySurface34
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -604,7 +633,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:Base1:Male:transform55
-      parentName: Base1:Male:polySurface61
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -614,7 +643,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:Base1:Male:transform56
-      parentName: Base1:Male:polySurface62
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -624,7 +653,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:Base1:Male:transform57
-      parentName: Base1:Male:polySurface63
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -894,7 +923,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:polySurface8
-      parentName: Base1:Male:dummy
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0, y: -0.047701437, z: 0.00041360615}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -904,7 +933,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Base1:Male:polySurface9
-      parentName: Base1:Male:dummy
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0.00203044, y: -0.047701437, z: 0.00041360615}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -1184,7 +1213,7 @@ ModelImporter:
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 0.044894457, y: 0.044894457, z: 0.044894457}
     - name: Base1:Male:polySurface6
-      parentName: Base:Male:Dummy
+      parentName: dummy_test@T-Pose(Clone)
       position: {x: -0.21774212, y: -1.0372223, z: -0.022658724}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
@@ -1365,11 +1394,11 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: b4e3a1a2c3ef68047b97f85f778813e7, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

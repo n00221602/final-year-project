@@ -6,6 +6,7 @@ TagManager:
   tags:
   - RoomTrigger
   - Enemy
+  - Door
   layers:
   - Default
   - TransparentFX

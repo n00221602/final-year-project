@@ -19,6 +19,8 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public GameObject roomParent1;
     [HideInInspector] public GameObject roomParent2;
     [HideInInspector] public GameObject roomParent3;
+    [HideInInspector] public GameObject roomParent4;
+    [HideInInspector] public GameObject roomParent5;
     [HideInInspector] public GameObject[] roomParent;
 
     //EVENT
@@ -28,14 +30,21 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public int[,] layout1;
     [HideInInspector] public int[,] layout2;
     [HideInInspector] public int[,] layout3;
+    [HideInInspector] public int[,] layout4;
+    [HideInInspector] public int[,] layout5;
 
     //Rows and cols for each layout (will be made dynamic later)
     [HideInInspector] public int rows1;
-    [HideInInspector] public int cols1;
     [HideInInspector] public int rows2;
-    [HideInInspector] public int cols2;
     [HideInInspector] public int rows3;
+    [HideInInspector] public int rows4;
+    [HideInInspector] public int rows5;
+
+    [HideInInspector] public int cols1;
+    [HideInInspector] public int cols2;
     [HideInInspector] public int cols3;
+    [HideInInspector] public int cols4;
+    [HideInInspector] public int cols5;
 
     //LISTS + ARRAYS
     [HideInInspector] public List<int[,]> layoutList;
@@ -69,13 +78,23 @@ public class RoomGen : MonoBehaviour
         rows3 = layout3.GetLength(0);
         cols3 = layout3.GetLength(1);
 
+        layout4 = roomLayout.layout4;
+        rows4 = layout4.GetLength(0);
+        cols4 = layout4.GetLength(1);
+
+        layout5 = roomLayout.layout5;
+        rows5 = layout5.GetLength(0);
+        cols5 = layout5.GetLength(1);
+
         layoutList = new List<int[,]>();
         layoutList.Add(layout1);
         layoutList.Add(layout2);
         layoutList.Add(layout3);
+        layoutList.Add(layout4);
+        layoutList.Add(layout5);
 
-        rowsArray = new int[] { rows1, rows2, rows3 };
-        colsArray = new int[] { cols1, cols2, cols3 };
+        rowsArray = new int[] { rows1, rows2, rows3, rows4, rows5 };
+        colsArray = new int[] { cols1, cols2, cols3, cols4, cols5 };
 
         //Tile targets later used for checking neighbouring tiles
         int cornerTarget = 1;
@@ -100,8 +119,10 @@ public class RoomGen : MonoBehaviour
         roomParent1 = new GameObject("Room");
         roomParent2 = new GameObject("Room2");
         roomParent3 = new GameObject("Room3");
+        roomParent4 = new GameObject("Room4");
+        roomParent5 = new GameObject("Room5");
 
-        roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3 };
+        roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3, roomParent4, roomParent5 };
 
         cornerRotation = Quaternion.Euler(0, 0, 0);
         wallRotation = Quaternion.Euler(0, 0, 0);

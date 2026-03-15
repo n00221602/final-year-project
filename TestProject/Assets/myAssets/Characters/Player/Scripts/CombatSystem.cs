@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CombatSystem : MonoBehaviour
@@ -16,14 +15,16 @@ public class CombatSystem : MonoBehaviour
 
     public Transform player;
     public GameObject primaryHitbox;
+    [HideInInspector] public bool hit = false;
+    float playerDamage = 0.34f;
 
     float closestEnemyDistance;
     GameObject closestEnemy;
 
-    List<Vector3> enemyPos;
-    List<float> enemyDistances;
     GameObject[] enemyCount;
     float enemyDif;
+
+    float elapsedTime;
 
     public bool isAttacking = false;
 
@@ -80,9 +81,9 @@ public class CombatSystem : MonoBehaviour
 
         if (closestEnemyDistance < 5f && closestEnemy != null)
         {
-            Vector3 lookPosition = closestEnemy.transform.position;
-            lookPosition.y = player.transform.position.y;
-            player.transform.LookAt(lookPosition);
+            //Vector3 lookPosition = closestEnemy.transform.position;
+            //lookPosition.y = player.transform.position.y;
+            //player.transform.LookAt(lookPosition);
             //player.transform.position = Vector3.MoveTowards(player.transform.position, closestEnemy.transform.position, 10f * Time.deltaTime);
             //playerMovement.rb.AddForce(closestEnemy.transform.position * playerMovement.moveSpeed * 10f, ForceMode.Force);
 
@@ -134,7 +135,7 @@ public class CombatSystem : MonoBehaviour
     private IEnumerator LockOn(Vector3 enemyPosition)
     {
         float lockOnTime = 0.15f;
-        float elapsedTime = 0f;
+        elapsedTime = 0f;
 
         Vector3 direction = (enemyPosition - player.position).normalized;
         direction.y = 0f;
@@ -166,7 +167,7 @@ public class CombatSystem : MonoBehaviour
     // This handles ONLY Rotation over time (for secondary attacks)
     private IEnumerator FaceEnemy(Vector3 enemyPosition, float turnDuration)
     {
-        float elapsedTime = 0f;
+        elapsedTime = 0f;
 
         Vector3 direction = (enemyPosition - player.position).normalized;
         direction.y = 0f;
@@ -198,7 +199,8 @@ public class CombatSystem : MonoBehaviour
         Debug.Log("Hitbox struck: " + hitEnemy.name);
 
         //Get enemy's health system and apply damage
-        hitEnemy.GetComponent<HealthSystem>().TakeDamage(0.1f);
+        hit = true;
+        hitEnemy.GetComponent<HealthSystem>().TakeDamage(playerDamage);
     }
 
     //Called at end of swing
@@ -206,6 +208,7 @@ public class CombatSystem : MonoBehaviour
     {
         primaryHitbox.SetActive(false);
         isAttacking = false;
+        hit = false;
     }
 
     void SecondaryHitboxOn()

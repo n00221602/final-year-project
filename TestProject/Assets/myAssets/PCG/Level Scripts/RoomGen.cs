@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class RoomGen : MonoBehaviour
 {
@@ -335,6 +336,9 @@ public class RoomGen : MonoBehaviour
 
         // Create combined mesh
         Mesh combinedMesh = new();
+
+        //Increase vertices limit
+        combinedMesh.indexFormat = IndexFormat.UInt32;
         combinedMesh.CombineMeshes(combine, true, true);
         combinedMesh.RecalculateNormals();
         combinedMesh.RecalculateBounds();

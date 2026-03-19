@@ -120,7 +120,7 @@ Material:
     - _Intensity: 0.49
     - _Max: 1
     - _Metallic: 0
-    - _Min: 0.25
+    - _Min: 0.05
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0

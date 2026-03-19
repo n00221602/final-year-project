@@ -57,7 +57,7 @@ public class RoomEnter : MonoBehaviour
             //Get all doors and close them. This is to prevent the player from leaving the room before the enemies are spawned.
             foreach (GameObject door in doors)
             {
-                door.transform.position = new Vector3(door.transform.position.x, 2f, door.transform.position.z);
+                door.transform.position = new Vector3(door.transform.position.x, 3f, door.transform.position.z);
             }
 
             isTriggered = true;
@@ -200,7 +200,7 @@ public class RoomEnter : MonoBehaviour
 
         foreach (GameObject door in doors)
         {
-            door.transform.position = new Vector3(door.transform.position.x, -2f, door.transform.position.z);
+            door.transform.position = new Vector3(door.transform.position.x, -3f, door.transform.position.z);
         }
 
         Debug.Log("ROOM CLEARED");

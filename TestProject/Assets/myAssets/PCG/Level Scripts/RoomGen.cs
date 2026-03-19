@@ -11,6 +11,7 @@ public class RoomGen : MonoBehaviour
     public GameObject innerCorner;
     public GameObject door;
     public GameObject output;
+    public GameObject innerWall;
 
     //Call the LayoutGen script
     public LayoutGen roomLayout;
@@ -52,13 +53,10 @@ public class RoomGen : MonoBehaviour
     [HideInInspector] public int[] colsArray;
 
     //ROTATIONS
-    [HideInInspector] public Quaternion cornerRotation;
-    [HideInInspector] public Quaternion wallRotation;
-    [HideInInspector] public Quaternion doorRotation;
-    [HideInInspector] public Quaternion outputRotation;
+    [HideInInspector] public Quaternion rotation;
 
-    //PHYSICS MATERIAL
-    //public PhysicsMaterial physicsMaterial;
+    //FLAGS
+    //bool isInnerWall = false;
 
     void Start()
     {
@@ -115,6 +113,9 @@ public class RoomGen : MonoBehaviour
         bool doorLeft;
         bool doorRight;
 
+        //bool innerWallVertical;
+        //bool innerWallHorizontal;
+
         //Parent Object. The instantiated prefabs are placed into this parent.
         roomParent1 = new GameObject("Room");
         roomParent2 = new GameObject("Room2");
@@ -124,9 +125,7 @@ public class RoomGen : MonoBehaviour
 
         roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3, roomParent4, roomParent5 };
 
-        cornerRotation = Quaternion.Euler(0, 0, 0);
-        wallRotation = Quaternion.Euler(0, 0, 0);
-        doorRotation = Quaternion.Euler(0, 0, 0);
+        rotation = Quaternion.Euler(0, 0, 0);
 
         //Creates layoutList based on the "layoutList" list index
         for (int i = 0; i < layoutList.Count; i++)
@@ -156,19 +155,19 @@ public class RoomGen : MonoBehaviour
                             //Corners are rotated accordingly to match surrounding walls.
                             if (bottom && right) //walls on bottom and right (top-left corner)
                             {
-                                cornerRotation = Quaternion.Euler(0, 90, 0);
+                                rotation = Quaternion.Euler(0, 90, 0);
                             }
                             else if (bottom && left) //walls on bottom and left (top-right corner)
                             {
-                                cornerRotation = Quaternion.Euler(0, 180, 0);
+                                rotation = Quaternion.Euler(0, 180, 0);
                             }
                             else if (top && right) //wall on top and right (bottom-left corner)
                             {
-                                cornerRotation = Quaternion.Euler(0, 0, 0);
+                                rotation = Quaternion.Euler(0, 0, 0);
                             }
                             else if (top && left) //wall on top and left (bottom-right corner)
                             {
-                                cornerRotation = Quaternion.Euler(0, 270, 0);
+                                rotation = Quaternion.Euler(0, 270, 0);
                             }
 
                             //Change bools to check for floors
@@ -180,11 +179,11 @@ public class RoomGen : MonoBehaviour
                             //If there are floors next to the corner, use innerCorner. Else use regular corner.
                             if (top || bottom || left || right)
                             {
-                                Instantiate(innerCorner, position, cornerRotation, roomParent[i].transform);
+                                Instantiate(innerCorner, position, rotation, roomParent[i].transform);
                             }
                             else
                             {
-                                Instantiate(corner, position, cornerRotation, roomParent[i].transform);
+                                Instantiate(corner, position, rotation, roomParent[i].transform);
                             }
                             break;
 
@@ -205,29 +204,40 @@ public class RoomGen : MonoBehaviour
                             doorLeft = (x > 0) && (layoutList[i][y, x - 1] == doorTarget || layoutList[i][y, x - 1] == outputTarget);
                             doorRight = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == doorTarget || layoutList[i][y, x + 1] == outputTarget);
 
+                            // innerWallVertical = (top && bottom) && !(left || right);
+                            // innerWallHorizontal = (left && right) && !(top || bottom);
+
                             if (doorTop || doorBottom || doorLeft || doorRight)
                             {
                                 break;
                             }
 
+
+
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
                             if (top)
                             {
-                                wallRotation = Quaternion.Euler(0, 90, 0);
+                                rotation = Quaternion.Euler(0, 90, 0);
                             }
                             else if (bottom)
                             {
-                                wallRotation = Quaternion.Euler(0, 270, 0);
+                                rotation = Quaternion.Euler(0, 270, 0);
                             }
                             else if (left)
                             {
-                                wallRotation = Quaternion.Euler(0, 0, 0);
+                                rotation = Quaternion.Euler(0, 0, 0);
                             }
                             else if (right)
                             {
-                                wallRotation = Quaternion.Euler(0, 180, 0);
+                                rotation = Quaternion.Euler(0, 180, 0);
                             }
-                            Instantiate(outerWall, position, wallRotation, roomParent[i].transform);
+
+                            // if(innerWallVertical || innerWallHorizontal){
+
+                            // Instantiate(innerWall, position, Quaternion.identity, roomParent[i].transform);
+
+                            // } 
+                            Instantiate(outerWall, position, rotation, roomParent[i].transform);
                             break;
 
 
@@ -247,13 +257,13 @@ public class RoomGen : MonoBehaviour
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
                             if (top || bottom)
                             {
-                                doorRotation = Quaternion.Euler(0, 90, 0);
+                                rotation = Quaternion.Euler(0, 90, 0);
                             }
                             else if (left || right)
                             {
-                                doorRotation = Quaternion.Euler(0, 0, 0);
+                                rotation = Quaternion.Euler(0, 0, 0);
                             }
-                            Instantiate(door, position, doorRotation, roomParent[i].transform);
+                            Instantiate(door, position, rotation, roomParent[i].transform);
                             break;
 
                         case 5:
@@ -264,25 +274,44 @@ public class RoomGen : MonoBehaviour
                             //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
                             if (top)
                             {
-                                outputRotation = Quaternion.Euler(0, 270, 0);
+                                rotation = Quaternion.Euler(0, 270, 0);
                             }
                             else if (bottom)
                             {
-                                outputRotation = Quaternion.Euler(0, 90, 0);
+                                rotation = Quaternion.Euler(0, 90, 0);
                             }
                             else if (left)
                             {
-                                outputRotation = Quaternion.Euler(0, 180, 0);
+                                rotation = Quaternion.Euler(0, 180, 0);
                             }
                             else if (right)
                             {
-                                outputRotation = Quaternion.Euler(0, 0, 0);
+                                rotation = Quaternion.Euler(0, 0, 0);
                             }
-                            Instantiate(output, position, outputRotation, roomParent[i].transform);
+                            Instantiate(output, position, rotation, roomParent[i].transform);
+                            break;
+
+                        case 6:
+                            top = (y > 0) && (layoutList[i][y - 1, x] == 6);
+                            bottom = (y < rowsArray[i] - 1) && (layoutList[i][y + 1, x] == 6);
+                            left = (x > 0) && (layoutList[i][y, x - 1] == 6);
+                            right = (x < colsArray[i] - 1) && (layoutList[i][y, x + 1] == 6);
+
+                            //Outer walls are rotated accordingly depending on neighbouring floor tile positions.
+                            if (top || bottom)
+                            {
+                                rotation = Quaternion.Euler(0, 0, 0);
+                            }
+                            else if (left || right)
+                            {
+                                rotation = Quaternion.Euler(0, 90, 0);
+                            }
+                            Instantiate(innerWall, position, rotation, roomParent[i].transform);
                             break;
                     }
                 }
             }
+
             CombineRoomMeshes(roomParent[i]);
         }
         //Invokes event listener in FloorCreator.cs to run once room generation code is complete.

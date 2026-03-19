@@ -29,8 +29,8 @@ public class RoomEnter : MonoBehaviour
     bool right;
     bool enemyClose;
 
-    int doorTarget = 4;
-    int outputTarget = 5;
+    //int doorTarget = 4;
+    //int outputTarget = 5;
 
     Vector3 spawnPoint;
     Vector3 noDif = new Vector3(0, 0, 0);

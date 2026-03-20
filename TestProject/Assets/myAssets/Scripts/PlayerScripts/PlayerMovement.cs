@@ -12,15 +12,14 @@ public class PlayerMovement : MonoBehaviour
     bool isGrounded;
 
     [Header("Dash")]
-    // public float dashForce;
     public float dashSpeed;
-    //Vector3 dash;
     public bool dashing;
     public float dashDuration;
     public float dashCooldown;
-    private float dashCooldownTimer;
-    private Vector3 playerFacing;
 
+
+    private Vector3 playerFacing;
+    public float dashCooldownTimer;
 
     public Transform orientation;
 
@@ -76,8 +75,19 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isIdle", true);
         }
 
+        if (dashCooldownTimer > 0)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+            //Debug.Log("DASH COOLDOWN: " + dashCooldownTimer);
+            if (dashCooldownTimer <= 0)
+            {
+                dashCooldownTimer = 0;
+                //Debug.Log("DASH READY");
+            }
+        }
+
         //Dash Ability
-        if (Input.GetKeyDown(KeyCode.Space) && !combatSystem.isAttacking)
+        if (Input.GetKeyDown(KeyCode.Space) && !combatSystem.isAttacking && dashCooldownTimer == 0)
         {
             Dash();
         }
@@ -127,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
         moveSpeed = dashSpeed;
         //Debug.Log("DASH");
 
+        //ResetDash is called after dashDuration is over.
         Invoke(nameof(ResetDash), dashDuration);
 
     }
@@ -135,13 +146,20 @@ public class PlayerMovement : MonoBehaviour
     {
         animator.SetBool("isDashing", false);
         dashing = false;
-        moveSpeed = 4f; // Reset to normal speed
-        //Invoke(nameof(ResetDashCooldown), dashCooldown);
+        moveSpeed = 4f;
+
+        dashCooldownTimer = 2f;
     }
 
     //private void ResetDashCooldown()
     //{
-
-    //    dashCooldownTimer = 0f;
+    //    dashCooldownTimer = 3f;
+    //    dashCooldownTimer -= Time.deltaTime;
+    //    Debug.Log("DASH COOLDOWN: " + dashCooldownTimer);
+    //    if (dashCooldownTimer <= 0)
+    //    {
+    //        dashCooldownTimer = 0;
+    //        Debug.Log("DASH READY");
+    //    }
     //}
 }

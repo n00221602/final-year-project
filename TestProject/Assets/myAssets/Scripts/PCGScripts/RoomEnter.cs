@@ -14,6 +14,9 @@ public class RoomEnter : MonoBehaviour
     [HideInInspector] public int rows;
     [HideInInspector] public int cols;
     public GameObject activeRoomParent;
+    public int activeRoomIndex;
+
+    public HealthSystem healthSystem;
 
     List<Vector3> spawnPointList;
     List<Vector3> usedSpawnPointList;
@@ -21,7 +24,7 @@ public class RoomEnter : MonoBehaviour
     int randomIndex;
 
     bool isTriggered = false;
-    bool spawnEnemies = false;
+    [HideInInspector] public bool spawnEnemies = false;
 
     bool top;
     bool bottom;
@@ -110,6 +113,7 @@ public class RoomEnter : MonoBehaviour
                     {
                         Debug.Log("OUTPUT FOUND AT: " + floorCreator.outputPosArray[j]);
                         activeRoom = roomGen.layoutList[i];
+                        activeRoomIndex = i;
                         activeRoomParent = roomGen.roomParent[i];
                         LoadEnemy();
                         return;
@@ -119,6 +123,7 @@ public class RoomEnter : MonoBehaviour
         }
     }
 
+    //Spawn enemys after a short delay.
     void LoadEnemy()
     {
         float timer = 1f;
@@ -128,70 +133,39 @@ public class RoomEnter : MonoBehaviour
     void SpawnEnemy()
     {
         spawnEnemies = true;
-        //Count all the 3s in the layout and add them into an array. Then randomly select one of the 3s and spawn an enemy there.
-        rows = activeRoom.GetLength(0);
-        cols = activeRoom.GetLength(1);
+
+        //Get all floor positions using position lookup instead of nested loops
+        List<Vector2Int> floorPositions = roomGen.GetTilePositions(activeRoomIndex, 3); // 3 = FLOOR
 
         //Initialize the spawn point list and used spawn point list.
         spawnPointList = new List<Vector3>();
         usedSpawnPointList = new List<Vector3>();
 
-        for (int y = 0; y < rows; y++)
+        //Convert floor positions to world space
+        foreach (Vector2Int floorPos in floorPositions)
         {
-            for (int x = 0; x < cols; x++)
-            {
-                if (activeRoom[y, x] == 3)
-                {
-                    spawnPointList.Add(new Vector3(x, 0, -y));
-                }
-            }
+            Vector3 worldSpawnPoint = new Vector3(floorPos.x, 0, -floorPos.y) + activeRoomParent.transform.position;
+            spawnPointList.Add(worldSpawnPoint);
         }
-        //Debug.Log("SPAWN POINT LENGTH:" + spawnPointList.Count);
 
-        //Pick a random postition from the list and spawn enemies there. If a spot is near a door or outlet then reroll.
+        Debug.Log("SPAWN POINT LENGTH:" + spawnPointList.Count);
+
+        //Pick a random position from the list and spawn enemies there.
         for (int i = 0; i < enemyCount; i++)
         {
             Debug.Log("CURRENT ITERATION: " + i);
             randomIndex = Random.Range(0, spawnPointList.Count);
 
-            //Since spawnPoint is relative to the room parent, we need to add the room parent's position from the spawn point to get the world position.
-            spawnPoint = spawnPointList[randomIndex] + activeRoomParent.transform.position;
+            spawnPoint = spawnPointList[randomIndex];
 
-
-
-
-            for (int y = 0; y < rows; y++)
-            {
-                for (int x = 0; x < cols; x++)
-                {
-                    enemyClose = enemy.transform.position - spawnPoint == noDif;
-
-
-                    if (x == spawnPoint.x || y == -spawnPoint.z || enemy)
-                    {
-                        //If the spawn point is near a door or outlet, or if an enemy is already there, then reroll by breaking out of the loop and starting the next iteration of the for loop.
-                        randomIndex = Random.Range(0, spawnPointList.Count);
-                        spawnPoint = spawnPointList[randomIndex] + activeRoomParent.transform.position;
-                    }
-                    else
-                    {
-                        //Once a spawn point is chosen, remove it from the spawn point list and add it to the used list.
-                        spawnPointList.RemoveAt(randomIndex);
-                        usedSpawnPointList.Add(spawnPoint);
-                        break;
-                    }
-                }
-            }
+            //Once a spawn point is chosen, remove it from the spawn point list and add it to the used list.
+            spawnPointList.RemoveAt(randomIndex);
+            usedSpawnPointList.Add(spawnPoint);
 
             Instantiate(enemy, spawnPoint, Quaternion.identity, activeRoomParent.transform);
-
-            //Debug.Log("SPAWN POINT: " + spawnPointList[randomIndex]);
-            //Debug.Log("PARENT POS: " + activeRoomParent.transform.position);
-            //Debug.Log("New SPAWN POINT: " + (spawnPointList[randomIndex] - activeRoomParent.transform.position));
-
         }
-
     }
+
 
     void RoomCleared()
     {

@@ -3,24 +3,23 @@ using UnityEngine.AI;
 
 public class LaserEnemyAI : MonoBehaviour
 {
-    public Transform player;
+    private Transform player;
     private NavMeshAgent agent;
     public Animator animator;
-    public HealthSystem healthSystem;
+    private HealthSystem healthSystem;
 
     public LineRenderer laserLineRenderer;
-    private Vector3 laserOffset = new Vector3(0, 1f, 0);
-    public enum State
+    private enum State
     {
         Idle,
         Aiming,
         Shooting,
         Cooldown
     }
-    public State currentState;
+    private State currentState;
     float playerDistance;
 
-    public float timer;
+    private float elapsedTime;
 
     private float dodgeWindow = 3.5f;
     private float aimTime = 4f;
@@ -74,7 +73,6 @@ public class LaserEnemyAI : MonoBehaviour
         {
             currentState = State.Aiming;
         }
-
     }
 
     void LaserAiming()
@@ -104,9 +102,9 @@ public class LaserEnemyAI : MonoBehaviour
             }
 
 
-            timer += Time.deltaTime;
-            //Debug.Log("Timer: " + timer);
-            if (timer >= dodgeWindow)
+            elapsedTime += Time.deltaTime;
+            //Debug.Log("Timer: " + elapsedTime);
+            if (elapsedTime >= dodgeWindow)
             {
                 if (lastPlayerPosition == Vector3.zero)
                 {
@@ -120,9 +118,9 @@ public class LaserEnemyAI : MonoBehaviour
 
             }
         }
-        if (timer >= aimTime)
+        if (elapsedTime >= aimTime)
         {
-            timer = 0f;
+            elapsedTime = 0f;
             currentState = State.Shooting;
         }
     }
@@ -138,7 +136,7 @@ public class LaserEnemyAI : MonoBehaviour
         Vector3 raycastStart = laserLineRenderer.GetPosition(0);
         Vector3 raycastEnd = laserLineRenderer.GetPosition(1);
 
-        timer += Time.deltaTime;
+        elapsedTime += Time.deltaTime;
 
         // Check for collision along the laser line
         RaycastHit hit;
@@ -159,7 +157,7 @@ public class LaserEnemyAI : MonoBehaviour
         }
 
         //Once time is up, deactivate laser and reset to idle
-        if (timer >= 0.8f)
+        if (elapsedTime >= 0.8f)
         {
             laserLineRenderer.enabled = false;
             currentState = State.Cooldown;
@@ -170,11 +168,11 @@ public class LaserEnemyAI : MonoBehaviour
     {
         animator.SetBool("isShooting", false);
         animator.SetBool("isOnCooldown", true);
-        timer += Time.deltaTime;
+        elapsedTime += Time.deltaTime;
 
-        if (timer >= 3f)
+        if (elapsedTime >= 3f)
         {
-            timer = 0f;
+            elapsedTime = 0f;
             lastPlayerPosition = Vector3.zero;
             currentState = State.Idle;
         }

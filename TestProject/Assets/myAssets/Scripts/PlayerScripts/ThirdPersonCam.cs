@@ -37,20 +37,5 @@ public class ThirdPersonCam : MonoBehaviour
             playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
         }
 
-        //Rotate worldspace UI to face camera
-        //if (roomEnter.spawnEnemies)
-        //{
-        //    RotateUI();
-        //}
-
     }
-
-    //public void RotateUI()
-    //{
-    //    foreach (GameObject element in GameObject.FindGameObjectsWithTag("Enemy"))
-    //    {
-    //        healthBar = element.GetComponent<HealthSystem>().health.gameObject;
-    //        healthBar.transform.LookAt(transform.position);
-    //    }
-    //}
 }

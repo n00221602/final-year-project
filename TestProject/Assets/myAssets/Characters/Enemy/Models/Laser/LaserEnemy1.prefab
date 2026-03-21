@@ -3390,12 +3390,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3efd0b1bb34bfe74ba5feed99c780ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LaserEnemyAI
-  player: {fileID: 0}
   animator: {fileID: 3934360698285414105}
-  healthSystem: {fileID: 0}
   laserLineRenderer: {fileID: 5661330883174190007}
-  currentState: 0
-  timer: 0
   laserGun: {fileID: 7194933626332859067}
 --- !u!114 &6101149411363875183
 MonoBehaviour:
@@ -7114,7 +7110,7 @@ GameObject:
   - component: {fileID: 6471764002993861478}
   m_Layer: 0
   m_Name: EnemyUI
-  m_TagString: Untagged
+  m_TagString: EnemyUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

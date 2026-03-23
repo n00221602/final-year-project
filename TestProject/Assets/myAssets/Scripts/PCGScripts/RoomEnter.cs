@@ -8,35 +8,23 @@ public class RoomEnter : MonoBehaviour
     public FloorCreator floorCreator;
     public RoomGen roomGen;
     public GameObject enemy;
-    public GameObject[] doors;
+    [HideInInspector] public GameObject[] doors;
 
     [HideInInspector] public int[,] activeRoom;
     [HideInInspector] public int rows;
     [HideInInspector] public int cols;
-    public GameObject activeRoomParent;
-    public int activeRoomIndex;
-
-    public HealthSystem healthSystem;
+    [HideInInspector] public GameObject activeRoomParent;
+    [HideInInspector] public int activeRoomIndex;
 
     List<Vector3> spawnPointList;
     List<Vector3> usedSpawnPointList;
-    public int enemyCount;
+    [HideInInspector] public int enemyCount;
     int randomIndex;
 
     bool isTriggered = false;
     [HideInInspector] public bool spawnEnemies = false;
 
-    bool top;
-    bool bottom;
-    bool left;
-    bool right;
-    bool enemyClose;
-
-    //int doorTarget = 4;
-    //int outputTarget = 5;
-
     Vector3 spawnPoint;
-    Vector3 noDif = new Vector3(0, 0, 0);
     Vector3 activeTrigger;
     void Awake()
     {
@@ -56,7 +44,7 @@ public class RoomEnter : MonoBehaviour
         if (collider.gameObject.CompareTag("RoomTrigger"))
         {
             activeTrigger = collider.gameObject.transform.localPosition;
-            Debug.Log("ACTIVE TRIGGER: " + activeTrigger);
+
             //Get all doors and close them. This is to prevent the player from leaving the room before the enemies are spawned.
             foreach (GameObject door in doors)
             {
@@ -90,8 +78,6 @@ public class RoomEnter : MonoBehaviour
     //This function loops through each layout and checks if the output position of the current room matches with any of the output positions in the layouts
     void RoomActive()
     {
-        //Solutions - go through each layout and check if 5 is equal to outputPos.
-
         //This function loops through each layout and checks if the output position of the current room matches with any of the output positions in the layouts.
         for (int i = 0; i < roomGen.layoutList.Count; i++)
         {
@@ -102,8 +88,6 @@ public class RoomEnter : MonoBehaviour
                 int yIndex = (int)-floorCreator.outputPosArray[j].z;
                 int xIndex = (int)floorCreator.outputPosArray[j].x;
                 Debug.Log(floorCreator.outputPosArray[j] + "<-OUTPUT POS ARRAY INDEX " + j);
-
-
 
                 //Checks if the indexs of the current output position are within the current layout's bounds.
                 if (yIndex >= 0 && yIndex < roomGen.layoutList[i].GetLength(0) && xIndex >= 0 && xIndex < roomGen.layoutList[i].GetLength(1))

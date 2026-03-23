@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Name: New Edge Detection
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 1
-  injectionPoint: 550
+  injectionPoint: 600
   fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: c56a9e29a850b4347a8a2fc80fc1d1ab, type: 2}

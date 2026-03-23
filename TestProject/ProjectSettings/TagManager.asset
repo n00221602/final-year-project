@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Door
   - EnemyUI
+  - PlayerCam
   layers:
   - Default
   - TransparentFX

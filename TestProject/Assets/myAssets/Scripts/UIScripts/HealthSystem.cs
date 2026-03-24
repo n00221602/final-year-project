@@ -32,6 +32,7 @@ public class HealthSystem : MonoBehaviour
         if (gameObject.CompareTag("Enemy"))
         {
             Debug.Log(gameObject.name + " DEAD");
+
             Destroy(gameObject);
         }
 

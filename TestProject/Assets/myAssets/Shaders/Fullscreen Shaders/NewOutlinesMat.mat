@@ -37,7 +37,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Boldness: 0.836
+    - _Boldness: 1.76
     - _ColourThreshold: 0.2
     - _DepthPower: 1
     - _DepthRange: -1
@@ -48,6 +48,7 @@ Material:
     - _NormalsRange: 1
     - _NormalsThreshold: 0.5
     - _Test: 0.000005
+    - _Thickness: 1.42
     m_Colors:
     - _InitialMinMax: {r: 0, g: 1, b: 0, a: 0}
     - _OutlineColour: {r: 0, g: 0, b: 0, a: 1}

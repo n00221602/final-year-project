@@ -38,46 +38,44 @@ public class FloorCreator : MonoBehaviour
                 return;
             }
 
-            //Find input position using position lookup - O(1) instead of O(n²)
-            Vector2Int? doorPos = roomGen.FindTilePosition(i, 4); // 4 = DOOR
+            Vector2Int? doorPos = roomGen.FindTilePosition(i, 4);
             if (!doorPos.HasValue)
                 continue;
 
             entryPosition = new Vector3(doorPos.Value.x, 0, -doorPos.Value.y);
             currentDoorRotation = roomGen.roomParent[i].transform.rotation;
 
-            //Find output location using position lookup - O(1) instead of O(n²)
-            Vector2Int? outputPos = roomGen.FindTilePosition(i + 1, 5); // 5 = OUTPUT
+            Vector2Int? outputPos = roomGen.FindTilePosition(i + 1, 5);
             if (!outputPos.HasValue)
                 continue;
 
             exitPosition = new Vector3(outputPos.Value.x, 0, -outputPos.Value.y);
             outputPosArray[i] = exitPosition;
 
-            //Subtract the '4' and '5' positions to find the difference.
-            Vector3 positionDifference = entryPosition - exitPosition;
+            //Subtract the '4' and '5' positions to find the difference. The offset is added so that rooms aren't overlapping.
+            Vector3 positionDifference = (entryPosition - exitPosition);
 
             //ROTATION//
 
-            //Set x and y values to the door position
-            int entryX = doorPos.Value.x;
-            int entryY = doorPos.Value.y;
+            ////Set x and y values to the door position
+            //int entryX = doorPos.Value.x;
+            //int entryY = doorPos.Value.y;
 
-            //Check for neighbouring floor tiles around the door using direct array access
-            top = (entryY > 0) && (roomGen.layoutList[i][entryY - 1, entryX] == floorTarget);
-            bottom = (entryY < roomGen.rowsArray[i] - 1) && (roomGen.layoutList[i][entryY + 1, entryX] == floorTarget);
-            left = (entryX > 0) && (roomGen.layoutList[i][entryY, entryX - 1] == floorTarget);
-            right = (entryX < roomGen.colsArray[i] - 1) && (roomGen.layoutList[i][entryY, entryX + 1] == floorTarget);
+            ////Check for neighbouring floor tiles around the door using direct array access
+            //top = (entryY > 0) && (roomGen.layoutList[i][entryY - 1, entryX] == floorTarget);
+            //bottom = (entryY < roomGen.rowsArray[i] - 1) && (roomGen.layoutList[i][entryY + 1, entryX] == floorTarget);
+            //left = (entryX > 0) && (roomGen.layoutList[i][entryY, entryX - 1] == floorTarget);
+            //right = (entryX < roomGen.colsArray[i] - 1) && (roomGen.layoutList[i][entryY, entryX + 1] == floorTarget);
 
-            //Determine room rotation based on door orientation
-            if (top || bottom)
-            {
-                roomRotation = Quaternion.Euler(0, 180, 0);
-            }
-            else if (left || right)
-            {
-                roomRotation = Quaternion.Euler(0, 180, 0);
-            }
+            ////Determine room rotation based on door orientation
+            //if (top || bottom)
+            //{
+            //    roomRotation = Quaternion.Euler(0, 180, 0);
+            //}
+            //else if (left || right)
+            //{
+            //    roomRotation = Quaternion.Euler(0, 180, 0);
+            //}
 
             if (positionDifference != Vector3.zero)
             {

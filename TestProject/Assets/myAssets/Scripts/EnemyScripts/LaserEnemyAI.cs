@@ -150,7 +150,7 @@ public class LaserEnemyAI : MonoBehaviour
             if (hit.collider.CompareTag("Player"))
             {
                 //Debug.Log("PLAYER DAMAGED");
-                laserLineRenderer.enabled = false;
+                //laserLineRenderer.enabled = false;
                 currentState = State.Cooldown;
                 healthSystem.TakeDamage(0.1f);
                 //healthSystem.PlayerGracePeriod(agent);

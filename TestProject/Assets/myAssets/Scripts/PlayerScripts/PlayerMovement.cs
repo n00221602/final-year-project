@@ -148,7 +148,7 @@ public class PlayerMovement : MonoBehaviour
         dashing = false;
         moveSpeed = 4f;
 
-        dashCooldownTimer = 2f;
+        dashCooldownTimer = 0.8f;
     }
 
     //private void ResetDashCooldown()

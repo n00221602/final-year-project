@@ -13,6 +13,7 @@ public class RoomGen : MonoBehaviour
     public GameObject door;
     public GameObject output;
     public GameObject innerWall;
+    public GameObject innerWallCorner;
 
     //Call the LayoutGen script
     public LayoutGen roomLayout;
@@ -206,11 +207,11 @@ public class RoomGen : MonoBehaviour
     {
         Vector3 position = new Vector3(x, 0, -y);
 
-        //Check for adjacent floors
-        bool top = (y > 0) && (layout[y - 1, x] == FLOOR);
-        bool bottom = (y < rows - 1) && (layout[y + 1, x] == FLOOR);
-        bool left = (x > 0) && (layout[y, x - 1] == FLOOR);
-        bool right = (x < cols - 1) && (layout[y, x + 1] == FLOOR);
+        //Check for adjacent floors and inner walls
+        bool top = (y > 0) && (layout[y - 1, x] == FLOOR || layout[y - 1, x] == INNER_WALL);
+        bool bottom = (y < rows - 1) && (layout[y + 1, x] == FLOOR || layout[y + 1, x] == INNER_WALL);
+        bool left = (x > 0) && (layout[y, x - 1] == FLOOR || layout[y, x - 1] == INNER_WALL);
+        bool right = (x < cols - 1) && (layout[y, x + 1] == FLOOR || layout[y, x + 1] == INNER_WALL);
 
         //Check if adjacent to doors or outputs
         bool doorTop = (y > 0) && (layout[y - 1, x] == DOOR || layout[y - 1, x] == OUTPUT);
@@ -294,11 +295,25 @@ public class RoomGen : MonoBehaviour
         bool right = (x < cols - 1) && (layout[y, x + 1] == INNER_WALL);
 
         rotation = GetInnerWallRotation(top, bottom, left, right);
-        Instantiate(innerWall, position, rotation, roomParent[layoutIdx].transform);
+
+        if (top && left || top && right || bottom && left || bottom && right)
+        {
+            Instantiate(innerWallCorner, position, rotation, roomParent[layoutIdx].transform);
+        }
+        else
+        {
+            Instantiate(innerWall, position, rotation, roomParent[layoutIdx].transform);
+        }
+
     }
 
     private Quaternion GetInnerWallRotation(bool top, bool bottom, bool left, bool right)
     {
+        if (bottom && right) return Quaternion.Euler(0, 0, 0);
+        if (bottom && left) return Quaternion.Euler(0, 90, 0);
+        if (top && right) return Quaternion.Euler(0, 270, 0);
+        if (top && left) return Quaternion.Euler(0, 180, 0);
+
         if (top || bottom) return Quaternion.Euler(0, 0, 0);
         if (left || right) return Quaternion.Euler(0, 90, 0);
         return Quaternion.identity;

@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
 
-
         SpeedControl();
 
         //Handle drag
@@ -58,10 +57,7 @@ public class PlayerMovement : MonoBehaviour
             rb.linearDamping = 0;
 
         //Stop sliding immediately when no input
-        if (horizontalInput == 0 && verticalInput == 0)
-        {
-            rb.linearVelocity = new Vector3(0f, 0, 0f);
-        }
+
 
         //Animations
         if (horizontalInput != 0 || verticalInput != 0)
@@ -95,6 +91,11 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+
+        if (horizontalInput == 0 && verticalInput == 0)
+        {
+            rb.linearVelocity = new Vector3(0f, 0, 0f);
+        }
     }
 
     private void MyInput()

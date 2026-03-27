@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7161460451675234792}
   - component: {fileID: 5421698001242093218}
   - component: {fileID: 2602309505661953279}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Details_Plate_Large (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 6692363892896442239}
   - component: {fileID: 5123737226617052161}
   - component: {fileID: 4477934631281200310}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Details_Plate_Large (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 7080829673709161145}
   - component: {fileID: 2409315963191988070}
   - component: {fileID: 4211769428204982031}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 4904904258627164169}
   - component: {fileID: 5488160638559677110}
   - component: {fileID: 4231807420554933411}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NewFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 32489196910932852}
   - component: {fileID: 4089305754146021278}
   - component: {fileID: 3963284823435566629}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Details_Plate_Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -464,7 +464,7 @@ GameObject:
   - component: {fileID: 7023765087833244769}
   - component: {fileID: 4379571671892028269}
   - component: {fileID: 7045476297149967176}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -554,7 +554,7 @@ GameObject:
   - component: {fileID: 881752733899936249}
   - component: {fileID: 3519841327991291749}
   - component: {fileID: 2060163308424555503}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Details_Plate_Large (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -643,7 +643,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4238026592794274816}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: inner-wall-corner
   m_TagString: Untagged
   m_Icon: {fileID: 0}

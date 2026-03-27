@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 908277851493207294}
   - component: {fileID: 8669824056198699515}
   - component: {fileID: 347830765963460133}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2143442838372181480
 GameObject:
@@ -98,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2909250674957189930}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: inner-corner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +136,7 @@ GameObject:
   - component: {fileID: 8860685591207739169}
   - component: {fileID: 315608450432843637}
   - component: {fileID: 7623392797476578228}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: floor (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,6 +213,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6266271320503534467
 GameObject:
@@ -224,7 +226,7 @@ GameObject:
   - component: {fileID: 666043662537063408}
   - component: {fileID: 4782252609659462266}
   - component: {fileID: 4878508330797905543}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,6 +303,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7795286717157848136
 GameObject:
@@ -313,7 +316,7 @@ GameObject:
   - component: {fileID: 5420322343111295015}
   - component: {fileID: 7650978785231336530}
   - component: {fileID: 2928986668453770960}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,4 +393,5 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}

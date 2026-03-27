@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9133075610463245989}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: inner-wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 4296032999350414153}
   - component: {fileID: 878563482577675500}
   - component: {fileID: 3158641393790668838}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NewFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,6 +123,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7963047346560228510
 GameObject:
@@ -135,7 +136,7 @@ GameObject:
   - component: {fileID: 3032111274312012233}
   - component: {fileID: 6721191543981997315}
   - component: {fileID: 4985775943287313659}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RoofTile_Plate2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,6 +215,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8246408621848289082
 GameObject:
@@ -226,7 +228,7 @@ GameObject:
   - component: {fileID: 5383004316717877955}
   - component: {fileID: 1960509425440665184}
   - component: {fileID: 4766003869423635437}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RoofTile_Plate2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -305,6 +307,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8882157601442472000
 GameObject:
@@ -317,7 +320,7 @@ GameObject:
   - component: {fileID: 7360218466996931308}
   - component: {fileID: 9197453262203012375}
   - component: {fileID: 4631032993361449270}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,4 +397,5 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}

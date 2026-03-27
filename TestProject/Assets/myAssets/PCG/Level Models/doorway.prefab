@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7545262716331682921}
   - component: {fileID: 402605279593134722}
   - component: {fileID: 4320107869538433412}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NewFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &283198430658250221
 GameObject:
@@ -100,7 +101,7 @@ GameObject:
   - component: {fileID: 8038203736337030840}
   - component: {fileID: 3706686851634208163}
   - component: {fileID: 8768690413761664809}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DoorDouble_Wall_SideA (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,6 +181,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1659197879630719324
 GameObject:
@@ -191,7 +193,7 @@ GameObject:
   m_Component:
   - component: {fileID: 867626236289075364}
   - component: {fileID: 1228880560273726661}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Door
   m_TagString: Door
   m_Icon: {fileID: 0}
@@ -247,7 +249,7 @@ GameObject:
   - component: {fileID: 5757249780888454004}
   - component: {fileID: 2979757624803136255}
   - component: {fileID: 6215737743412515796}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Door_Double.R (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,6 +330,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2083806829170344653
 GameObject:
@@ -338,7 +341,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3924538704166472018}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: doorway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,7 +378,7 @@ GameObject:
   - component: {fileID: 6783369374910618707}
   - component: {fileID: 2499929685207177390}
   - component: {fileID: 8550593233695799484}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Door_Double.L (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,6 +459,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5221544710229628672
 GameObject:
@@ -466,7 +470,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4052302564983208491}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: doorway
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -501,7 +505,7 @@ GameObject:
   - component: {fileID: 7364884380047552265}
   - component: {fileID: 968585031989782990}
   - component: {fileID: 2477411421873675565}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DoorDouble_Wall_SideA (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,6 +585,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7262063250202965395
 GameObject:
@@ -593,7 +598,7 @@ GameObject:
   - component: {fileID: 3835707946051439357}
   - component: {fileID: 6207918277207993138}
   - component: {fileID: 6274696322321422066}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NewFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -670,4 +675,5 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}

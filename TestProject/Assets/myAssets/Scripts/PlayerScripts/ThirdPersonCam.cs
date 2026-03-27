@@ -34,7 +34,7 @@ public class ThirdPersonCam : MonoBehaviour
 
         if (inputDir != Vector3.zero && (combatSystem != null && !combatSystem.isAttacking))
         {
-            playerObj.forward = Vector3.Lerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+            playerObj.forward = inputDir;
         }
 
     }

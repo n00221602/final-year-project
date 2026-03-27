@@ -18,7 +18,7 @@ public class RoomEnter : MonoBehaviour
 
     List<Vector3> spawnPointList;
     List<Vector3> usedSpawnPointList;
-    [HideInInspector] public int enemyCount;
+    public int enemyCount;
     int randomIndex;
 
     bool isTriggered = false;

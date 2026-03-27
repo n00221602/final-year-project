@@ -150,7 +150,7 @@ public class CombatSystem : MonoBehaviour
         while (elapsedTime < lockOnTime)
         {
             // 1. Smoothly Rotate
-            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime / lockOnTime);
+            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime * 10f);
 
             // 2. Smoothly Move
             Vector3 nextPos = Vector3.Lerp(startingPos, destination, elapsedTime / lockOnTime);

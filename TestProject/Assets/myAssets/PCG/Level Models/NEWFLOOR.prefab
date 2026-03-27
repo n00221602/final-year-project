@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4125078681006858005}
   - component: {fileID: 1049587895066448048}
   - component: {fileID: 2987036542384252026}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NewFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6434756781069519978
 GameObject:
@@ -98,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5857798847659142796}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: newfloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

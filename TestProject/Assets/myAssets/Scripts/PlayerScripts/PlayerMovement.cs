@@ -132,7 +132,7 @@ public class PlayerMovement : MonoBehaviour
         dashing = true;
         animator.SetBool("isDashing", true);
         moveSpeed = dashSpeed;
-        //Debug.Log("DASH");
+        //rb.AddForce(orientation.forward * moveSpeed * 10f, ForceMode.Force);
 
         //ResetDash is called after dashDuration is over.
         Invoke(nameof(ResetDash), dashDuration);

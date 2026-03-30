@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 1
   injectionPoint: 450
-  fetchColorBuffer: 0
+  fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: d3d8d59094095d64c90ba28d475b5579, type: 2}
   passIndex: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
   m_Name: Greyscale
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 0
-  injectionPoint: 450
+  injectionPoint: 550
   fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: 939aad464b8e5784fb2157a0993aff24, type: 2}
@@ -68,11 +68,11 @@ MonoBehaviour:
   - {fileID: 7833122117494664109}
   - {fileID: -443231466090153930}
   - {fileID: -5733829165987154090}
-  - {fileID: 7765067305046216222}
-  - {fileID: 6986913238494332346}
   - {fileID: 1454820267909500790}
+  - {fileID: 6986913238494332346}
   - {fileID: 5163183518794823840}
-  m_RendererFeatureMap: ad6b866f10d7b46c36b86b765453d9f956b78faec0586db01e8e47a6920fc36bbac5ed789280f66076cfc860538f3014a0b8eafb0d50a747
+  - {fileID: 7765067305046216222}
+  m_RendererFeatureMap: ad6b866f10d7b46c36b86b765453d9f956b78faec0586db076cfc860538f3014bac5ed789280f660a0b8eafb0d50a7471e8e47a6920fc36b
   m_UseNativeRenderPass: 1
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
   m_Name: CelShading CrossHatch
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
-  m_Active: 0
+  m_Active: 1
   injectionPoint: 450
   fetchColorBuffer: 1
   requirements: 0
@@ -131,17 +131,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: PlayerDeathMask
+  m_Name: PlayerMask
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.RenderObjects
   m_Active: 0
   settings:
-    passTag: PlayerDeathMask
-    Event: 500
+    passTag: PlayerMask
+    Event: 600
     filterSettings:
       RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
-        m_Bits: 4294967295
+        m_Bits: 72
       PassNames: []
     overrideMaterial: {fileID: 2100000, guid: 0a4d4398f82e0174c95ff0678a1457f8, type: 2}
     overrideMaterialPassIndex: 0
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: Edge Detection
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 1
-  injectionPoint: 550
+  injectionPoint: 450
   fetchColorBuffer: 1
   requirements: 0
   passMaterial: {fileID: 2100000, guid: c56a9e29a850b4347a8a2fc80fc1d1ab, type: 2}

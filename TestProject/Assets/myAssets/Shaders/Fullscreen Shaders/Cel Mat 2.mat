@@ -42,13 +42,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _HatchBoldness: 0.8
-    - _HatchFrequency: 50
+    - _HatchFrequency: 80
     - _Intensity: 0.29
     - _Max: 1
     - _Min: 0.15
     m_Colors:
-    - _HashRemapIn: {r: 0.8, g: -0.5, b: 0, a: 0}
-    - _HashRemapOut: {r: 0, g: 1, b: 0, a: 0}
+    - _HashRemapIn: {r: 0.4, g: -1, b: 0, a: 0}
+    - _HashRemapOut: {r: 0.47, g: 1, b: 0, a: 0}
     - _RemapIn: {r: 0.4, g: -1, b: 0, a: 0}
     - _RemapOut: {r: 0.26, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

@@ -342,7 +342,7 @@ public class RoomGen : MonoBehaviour
 
     void CombineRoomMeshes(GameObject roomParent)
     {
-        // Get all MeshFilters from direct children only (not nested)
+        // Get all MeshFilters from the prefabs in the current roomParent.
         MeshFilter[] meshFilters = roomParent.GetComponentsInChildren<MeshFilter>();
 
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
@@ -366,5 +366,6 @@ public class RoomGen : MonoBehaviour
         // Add MeshCollider to the roomParent
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
         meshCollider.sharedMesh = combinedMesh;
+        meshCollider.convex = false;
     }
 }

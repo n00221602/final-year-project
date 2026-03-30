@@ -42,7 +42,7 @@ Material:
     - _DepthPower: 1
     - _DepthRange: -1
     - _DepthThickness: 12
-    - _DepthThreshold: 0.001
+    - _DepthThreshold: 0.0001
     - _NormalPower: 1
     - _NormalsPower: 1
     - _NormalsRange: 1

@@ -10,6 +10,7 @@ TagManager:
   - EnemyUI
   - PlayerCam
   - EnemyParent
+  - HitUI
   layers:
   - Default
   - TransparentFX

@@ -23,8 +23,8 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform orientation;
 
-    float horizontalInput;
-    float verticalInput;
+    [HideInInspector] public float horizontalInput;
+    [HideInInspector] public float verticalInput;
 
     [HideInInspector] public Vector3 moveDirection;
 
@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
         dashing = false;
         moveSpeed = 4f;
 
-        dashCooldownTimer = 0.8f;
+        dashCooldownTimer = 0.4f;
     }
 
     //private void ResetDashCooldown()

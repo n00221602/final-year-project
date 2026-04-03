@@ -34,8 +34,6 @@ public class RoomEnter : MonoBehaviour
     void FindDoors()
     {
         doors = GameObject.FindGameObjectsWithTag("Door");
-        Debug.Log("DOOR LENGTH: " + doors.Length);
-
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -87,7 +85,6 @@ public class RoomEnter : MonoBehaviour
                 //The output position is a vector3, so we need to convert them back to their original [y,x] format to cross reference the indexes.
                 int yIndex = (int)-floorCreator.outputPosArray[j].z;
                 int xIndex = (int)floorCreator.outputPosArray[j].x;
-                Debug.Log(floorCreator.outputPosArray[j] + "<-OUTPUT POS ARRAY INDEX " + j);
 
                 //Checks if the indexs of the current output position are within the current layout's bounds.
                 if (yIndex >= 0 && yIndex < roomGen.layoutList[i].GetLength(0) && xIndex >= 0 && xIndex < roomGen.layoutList[i].GetLength(1))
@@ -95,7 +92,6 @@ public class RoomEnter : MonoBehaviour
                     //If the current layout index matches the output position, then the active room has been found. This layout and its parent is set to the active room.
                     if (roomGen.layoutList[i][yIndex, xIndex] == 5 && floorCreator.outputPosArray[j] == activeTrigger)
                     {
-                        Debug.Log("OUTPUT FOUND AT: " + floorCreator.outputPosArray[j]);
                         activeRoom = roomGen.layoutList[i];
                         activeRoomIndex = i;
                         activeRoomParent = roomGen.roomParent[i];
@@ -132,12 +128,12 @@ public class RoomEnter : MonoBehaviour
             spawnPointList.Add(worldSpawnPoint);
         }
 
-        Debug.Log("SPAWN POINT LENGTH:" + spawnPointList.Count);
+        //Debug.Log("SPAWN POINT LENGTH:" + spawnPointList.Count);
 
         //Pick a random position from the list and spawn enemies there.
         for (int i = 0; i < enemyCount; i++)
         {
-            Debug.Log("CURRENT ITERATION: " + i);
+            //Debug.Log("CURRENT ITERATION: " + i);
             randomIndex = Random.Range(0, spawnPointList.Count);
 
             spawnPoint = spawnPointList[randomIndex];

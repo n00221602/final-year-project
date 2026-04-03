@@ -2,15 +2,24 @@ using UnityEngine;
 
 public class HitboxReporter : MonoBehaviour
 {
-    public CombatSystem combatSystem; // Drag Player into here
+    public CombatSystem combatSystem;
+    public EnemyAI enemyAI;
+
     [HideInInspector] public GameObject hitEnemy;
+    [HideInInspector] public bool hit = false;
 
     private void OnTriggerEnter(Collider other)
     {
         //If the hitbox comes in contact with an enemy, run the OnHitboxHit function from CombatSystem.
-        if (other.CompareTag("Enemy") && combatSystem.hit != true)
+        if (other.CompareTag("Enemy") && hit != true)
         {
             combatSystem.OnHitboxHit(other.gameObject);
+        }
+
+
+        if (other.CompareTag("Player") && hit != true)
+        {
+            enemyAI.OnPlayerHit(other.gameObject);
         }
     }
 }

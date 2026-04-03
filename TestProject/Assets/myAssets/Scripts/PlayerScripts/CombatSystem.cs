@@ -3,19 +3,18 @@ using UnityEngine;
 
 public class CombatSystem : MonoBehaviour
 {
-    //TO-DO
-    //Handle inputs. Primary (right hand) and secondary (left hand) attacks. DONE
-    //Handle combat animations. ALSO look into root motion.
-    //For hitboxes, enable the hitbox depending on the animation frame.
-
     public Animator animator;
     public PlayerMovement playerMovement;
     public RoomEnter roomEnter;
     public HealthSystem healthSystem;
+    public HitboxReporter hitboxReporter;
 
     public Transform player;
     public GameObject primaryHitbox;
+
+    //hit bool is used to prevent constant hits with the same attack. It is checked within HitboxReporter.cs
     [HideInInspector] public bool hit = false;
+
     float playerDamage = 0.34f;
 
     float closestEnemyDistance;
@@ -24,9 +23,10 @@ public class CombatSystem : MonoBehaviour
     GameObject[] enemyCount;
     float enemyDif;
 
-    float elapsedTime;
+    //float elapsedTime;
 
-    public bool isAttacking = false;
+    [HideInInspector] public bool isAttacking = false;
+
 
 
     void Start()
@@ -39,8 +39,6 @@ public class CombatSystem : MonoBehaviour
         Input.GetKeyDown(KeyCode.Mouse0);
         Input.GetKeyUp(KeyCode.Mouse1);
         primaryHitbox.SetActive(false);
-
-
     }
 
     // Update is called once per frame
@@ -56,7 +54,17 @@ public class CombatSystem : MonoBehaviour
             SecondaryAttack();
         }
 
-        FindClosestEnemy();
+        if (isAttacking)
+        {
+            playerMovement.rb.linearVelocity = Vector3.zero;
+            playerMovement.horizontalInput = 0f;
+            playerMovement.verticalInput = 0f;
+
+        }
+        else
+        {
+            FindClosestEnemy();
+        }
     }
 
     //HITBOX CHECKS//
@@ -73,11 +81,12 @@ public class CombatSystem : MonoBehaviour
 
 
 
-    //ANIMATIONS//
+    //ATTACKS//
     void PrimaryAttack()
     {
         if (isAttacking) return;
         isAttacking = true;
+        playerMovement.enabled = false;
 
         if (closestEnemyDistance < 5f && closestEnemy != null)
         {
@@ -86,8 +95,8 @@ public class CombatSystem : MonoBehaviour
             //player.transform.LookAt(lookPosition);
             //player.transform.position = Vector3.MoveTowards(player.transform.position, closestEnemy.transform.position, 10f * Time.deltaTime);
             //playerMovement.rb.AddForce(closestEnemy.transform.position * playerMovement.moveSpeed * 10f, ForceMode.Force);
-
-            StartCoroutine(LockOn(closestEnemy.transform.position));
+            //isPrimaryAttacking = true;
+            StartCoroutine(LockOn(closestEnemy.transform.position, true));
 
         }
 
@@ -99,11 +108,14 @@ public class CombatSystem : MonoBehaviour
     {
         if (isAttacking) return;
         isAttacking = true;
+        //playerMovement.enabled = false;
 
         if (closestEnemy != null)
         {
-            StartCoroutine(FaceEnemy(closestEnemy.transform.position, 0.15f));
+            StartCoroutine(LockOn(closestEnemy.transform.position, false));
         }
+
+        //if (
 
         animator.SetTrigger("AttackS");
     }
@@ -132,66 +144,51 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator LockOn(Vector3 enemyPosition)
+    private IEnumerator LockOn(Vector3 enemyPosition, bool isPrimaryAttack)
     {
         float lockOnTime = 0.15f;
-        elapsedTime = 0f;
+        float elapsedTime = 0f;
 
         Vector3 direction = (enemyPosition - player.position).normalized;
         direction.y = 0f;
 
-        // Target rotation setup
-        Quaternion startRot = player.rotation;
-        Quaternion targetRot = Quaternion.LookRotation(direction);
-
+        Vector3 startPos = playerMovement.rb.position;
         Vector3 destination = enemyPosition - (direction * 0.5f);
-        Vector3 startingPos = playerMovement.rb.position; // Use Rigidbody position for accuracy
 
         while (elapsedTime < lockOnTime)
         {
-            // 1. Smoothly Rotate
-            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime * 10f);
+            player.rotation = Quaternion.LookRotation(direction);
 
-            // 2. Smoothly Move
-            Vector3 nextPos = Vector3.Lerp(startingPos, destination, elapsedTime / lockOnTime);
-            playerMovement.rb.MovePosition(nextPos);
+            //Move towards enemy if primary attack
+            if (isPrimaryAttack)
+            {
+                Vector3 nextPos = Vector3.Lerp(startPos, destination, elapsedTime / lockOnTime);
+                playerMovement.rb.MovePosition(nextPos);
+            }
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Snap perfectly at the end to ensure it didn't fall short
-        player.rotation = targetRot;
-    }
-
-    // This handles ONLY Rotation over time (for secondary attacks)
-    private IEnumerator FaceEnemy(Vector3 enemyPosition, float turnDuration)
-    {
-        elapsedTime = 0f;
-
-        Vector3 direction = (enemyPosition - player.position).normalized;
-        direction.y = 0f;
-
-        Quaternion startRot = player.rotation;
-        Quaternion targetRot = Quaternion.LookRotation(direction);
-
-        while (elapsedTime < turnDuration)
-        {
-            player.rotation = Quaternion.Slerp(startRot, targetRot, elapsedTime / turnDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        player.rotation = targetRot;
+        //player.forward = direction;
+        //playerMovement.rb.MovePosition(destination);
     }
 
     //ANIMATION EVENT FUNCTIONS//
 
-    //Called at start of swing
+    //Called by animation event at start of swing
     void PrimaryHitboxOn()
     {
-        Debug.Log("SWING");
         primaryHitbox.SetActive(true);
+    }
+
+    //Called animation event at end of swing
+    void PrimaryHitboxOff()
+    {
+        primaryHitbox.SetActive(false);
+        isAttacking = false;
+        playerMovement.enabled = true;
+        hitboxReporter.hit = false;
     }
 
     public void OnHitboxHit(GameObject hitEnemy)
@@ -199,16 +196,8 @@ public class CombatSystem : MonoBehaviour
         Debug.Log("Hitbox struck: " + hitEnemy.name);
 
         //Get enemy's health system and apply damage
-        hit = true;
+        hitboxReporter.hit = true;
         hitEnemy.GetComponent<HealthSystem>().TakeDamage(playerDamage);
-    }
-
-    //Called at end of swing
-    void PrimaryHitboxOff()
-    {
-        primaryHitbox.SetActive(false);
-        isAttacking = false;
-        hit = false;
     }
 
     void SecondaryHitboxOn()

@@ -19,6 +19,7 @@ public class HitboxReporter : MonoBehaviour
 
         if (other.CompareTag("Player") && hit != true)
         {
+            Debug.Log("Player hit by enemy!");
             enemyAI.OnPlayerHit(other.gameObject);
         }
     }

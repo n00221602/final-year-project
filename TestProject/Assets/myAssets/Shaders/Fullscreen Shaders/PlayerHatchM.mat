@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Cel Mat
-  m_Shader: {fileID: -6465566751694194690, guid: a6a0b352f496a254096980d13fcae136, type: 3}
+  m_Name: PlayerHatchM
+  m_Shader: {fileID: -6465566751694194690, guid: d5b9381ce34e855439f6ae7fa4bff1c7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,19 +23,7 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _DiffuseCustomGradient_4124c5d09a2f4754b9f6ea47fb6b000f_LightingGradient_1978785500_Texture2D:
-        m_Texture: {fileID: 2800000, guid: 53695178d016fc240af5ebd246abc260, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MaskTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_4bbff61686cb4f2aa0ea813fc125a38f_Texture_1_Texture2D:
-        m_Texture: {fileID: 8400000, guid: 6f7ae1f8acb474e44a2d9a660b5d9eac, type: 2}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_f7f13f8a168d4cc4aea9476f9be08a9e_Texture_1_Texture2D:
         m_Texture: {fileID: 8400000, guid: 6f7ae1f8acb474e44a2d9a660b5d9eac, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -53,17 +41,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HatchBoldness: 0.3
-    - _HatchFrequency: 50
-    - _Intensity: 1
-    - _MASKTEXTURE: 0
+    - _HatchBoldness: 1
+    - _HatchDistance: 2.5
+    - _HatchFrequency: 80
+    - _HatchFrequencyHigh: 40
+    - _HatchFrequencyLow: 80
+    - _HatchFrequency_1: 40
+    - _Intensity: -23.1
     - _Max: 1
-    - _Min: 0.69
+    - _Min: 0.15
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
-    - _HashRemapIn: {r: 0.4, g: -1, b: 0, a: 0}
-    - _HashRemapOut: {r: 0.6, g: 1, b: 0, a: 0}
-    - _RemapIn: {r: 0.4, g: -1, b: 0, a: 0}
-    - _RemapOut: {r: 0.26, g: 1, b: 0, a: 0}
+    - _HashRemapIn: {r: 0, g: -1, b: 0, a: 0}
+    - _HashRemapOut: {r: 0.69, g: 1, b: 0, a: 0}
+    - _RemapIn: {r: 0, g: -1, b: 0, a: 0}
+    - _RemapOut: {r: 0.5, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

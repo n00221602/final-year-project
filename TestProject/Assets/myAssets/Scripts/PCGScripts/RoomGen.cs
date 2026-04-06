@@ -15,6 +15,8 @@ public class RoomGen : MonoBehaviour
     public GameObject innerWall;
     public GameObject innerWallCorner;
 
+    //THEMES - warehouse, lab, generic.
+
     //Call the LayoutGen script
     public LayoutGen roomLayout;
 

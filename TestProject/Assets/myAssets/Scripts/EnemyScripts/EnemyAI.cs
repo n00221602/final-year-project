@@ -15,11 +15,11 @@ public class EnemyAI : MonoBehaviour
     public GameObject hitArea;
     public HitboxReporter hitboxReporter;
 
-    public Collider hitAreaCollider;
+    public Collider hitAreaHitbox;
 
     public HealthSystem playerHealth;
 
-    float jumpDamage = 0.34f;
+    float jumpDamage = 1f;
 
     AnimatorStateInfo stateInfo;
     private Vector3 chargingStartPosition;
@@ -41,6 +41,7 @@ public class EnemyAI : MonoBehaviour
     float longRangeDistance = 10f;
     float attackDistance = 1f;
     float elapsedTime;
+    bool hasCharged = false;
 
     Vector3 lastPlayerPosition;
 
@@ -56,8 +57,8 @@ public class EnemyAI : MonoBehaviour
 
         hitArea.SetActive(false);
 
-        Collider hitareaHitbox = hitArea.GetComponent<Collider>();
-        hitareaHitbox.enabled = false;
+        //Collider hitareaHitbox = hitArea.GetComponent<Collider>();
+        hitAreaHitbox.enabled = false;
 
     }
 
@@ -94,11 +95,6 @@ public class EnemyAI : MonoBehaviour
     void EnemyIdle()
     {
         animator.SetBool("isIdle", true);
-        animator.SetBool("isCloseRange", false);
-        animator.SetBool("isAttacking", false);
-        animator.SetBool("isLongRangeAim", false);
-        animator.SetBool("isCharging", false);
-        animator.SetBool("isLanding", false);
 
         Debug.Log("IDLE");
         //animator.SetBool("isCloseRange", false);
@@ -109,25 +105,21 @@ public class EnemyAI : MonoBehaviour
         //Close Range
         if (playerDistance < closeRangeDistance)
         {
+            animator.SetBool("isIdle", false);
             currentState = State.CloseRange;
         }
         //If player is between close and long range distance, change to LongRange state
         else if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
         {
+            animator.SetBool("isIdle", false);
             currentState = State.LongRange;
         }
     }
 
-
     //This state checks if the player is within its close range only it's in the enemy view.
     void EnemyCloseRange()
     {
-        animator.SetBool("isIdle", false);
         animator.SetBool("isCloseRange", true);
-        animator.SetBool("isAttacking", false);
-        animator.SetBool("isLongRangeAim", false);
-        animator.SetBool("isCharging", false);
-        animator.SetBool("isLanding", false);
         agent.isStopped = false;
         agent.transform.LookAt(player.transform);
         agent.SetDestination(player.transform.position);
@@ -135,23 +127,20 @@ public class EnemyAI : MonoBehaviour
 
         if (playerDistance < attackDistance)
         {
+            animator.SetBool("isCloseRange", false);
             currentState = State.Attacking;
         }
 
         if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
         {
+            animator.SetBool("isCloseRange", false);
             currentState = State.LongRange;
         }
     }
 
     void EnemyAttack()
     {
-        animator.SetBool("isIdle", false);
-        animator.SetBool("isCloseRange", false);
         animator.SetBool("isAttacking", true);
-        animator.SetBool("isLongRangeAim", false);
-        animator.SetBool("isCharging", false);
-        animator.SetBool("isLanding", false);
 
         agent.isStopped = true;
         agent.ResetPath();
@@ -165,11 +154,13 @@ public class EnemyAI : MonoBehaviour
 
         if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
         {
+            animator.SetBool("isAttacking", false);
             currentState = State.CloseRange;
         }
 
         if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
         {
+            animator.SetBool("isAttacking", false);
             currentState = State.LongRange;
         }
 
@@ -180,17 +171,10 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-
     //This state checks if the player is within its long range only it's in the enemy view.
     void EnemyLongRangeAim()
     {
-        animator.SetBool("isIdle", false);
-        animator.SetBool("isCloseRange", false);
-        animator.SetBool("isAttacking", false);
         animator.SetBool("isLongRangeAim", true);
-        animator.SetBool("isCharging", false);
-        animator.SetBool("isLanding", false);
-        agent.ResetPath();
         Debug.Log("AIMING");
 
         elapsedTime += Time.deltaTime;
@@ -210,92 +194,91 @@ public class EnemyAI : MonoBehaviour
 
         if (elapsedTime > 4f)
         {
+            animator.SetBool("isLongRangeAim", false);
             elapsedTime = 0f;
             currentState = State.Charging;
         }
 
     }
+
     void EnemyCharge()
     {
-        animator.SetBool("isIdle", false);
-        animator.SetBool("isCloseRange", false);
-        animator.SetBool("isAttacking", false);
-        animator.SetBool("isLongRangeAim", false);
         animator.SetBool("isCharging", true);
-        animator.SetBool("isLanding", false);
         Debug.Log("CHARGING");
 
-        //float chargeDuration = 1.5f;
-        //float animationSpeed = 1f / chargeDuration;
-        //animator.speed = animationSpeed;
+        float chargeDuration = 1.5f;
+        float animationSpeed = 1f / chargeDuration;
+        animator.speed = animationSpeed;
 
-        //start position is only set once.
-        if (chargingStartPosition == Vector3.zero)
+        // Initialize start position on first frame
+        if (elapsedTime == 0f)
         {
             chargingStartPosition = transform.position;
-
         }
-        //elapsedTime += Time.deltaTime;
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        float animationProgress = stateInfo.normalizedTime;
 
-        Vector3 moveToTarget = Vector3.Lerp(chargingStartPosition, lastPlayerPosition, animationProgress);
+        elapsedTime += Time.deltaTime;
+        float progress = elapsedTime / chargeDuration;
+
+        Vector3 moveToTarget = Vector3.Lerp(chargingStartPosition, lastPlayerPosition, progress);
         transform.position = moveToTarget;
 
-        //if (stateInfo.normalizedTime >= 1f)
-        //{
-        //    elapsedTime = 0f;
-        //    //animationSpeed = 1f;
-        //    currentState = State.Landing;
-        //    chargingStartPosition = Vector3.zero;
-        //}
+        if (elapsedTime >= chargeDuration)
+        {
+            animator.SetBool("isCharging", false);
+            elapsedTime = 0f;
+            animator.speed = 1f;
+            currentState = State.Landing;
+        }
     }
 
     void EnemyLand()
     {
-        animator.SetBool("isIdle", false);
-        animator.SetBool("isCloseRange", false);
-        animator.SetBool("isAttacking", false);
-        animator.SetBool("isLongRangeAim", false);
-        animator.SetBool("isCharging", false);
         animator.SetBool("isLanding", true);
         Debug.Log("LANDING");
+        agent.isStopped = true;
+        hitAreaHitbox.enabled = true;
 
-        hitAreaCollider.enabled = true;
-
-        //if (stateInfo.normalizedTime == 1f)
+        //if (hitboxReporter.hit)
         //{
-        //    hitArea.SetActive(false) when land animation is over.
+        //    hitboxReporter.hit = false;
         //}
 
+        //ANIMATION IS 1.867 SECONDS LONG
+        float animationLength = 1.867f;
+        elapsedTime += Time.deltaTime;
 
-        if (playerDistance < attackDistance)
+        ////normalizedTime always outputs 1 on first frame
+        if (elapsedTime >= 0.5f)
         {
-            hitAreaCollider.enabled = false;
-            //hitArea.SetActive(false);
-            currentState = State.Attacking;
+            hitAreaHitbox.enabled = false;
+            hitArea.SetActive(false);
         }
 
-        if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
-        {
-            hitAreaCollider.enabled = false;
-            //hitArea.SetActive(false);
-            currentState = State.CloseRange;
-        }
 
-        if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
-        {
-            hitAreaCollider.enabled = false;
-            //hitArea.SetActive(false);
-            currentState = State.LongRange;
-        }
 
-        //if (playerDistance > longRangeDistance)
-        //{
-        //    hitAreaCollider.enabled = false;
-        //    //hitArea.SetActive(false);
-        //    currentState = State.Idle;
-        //}
+        //Only change states once animation is fully done.
+        if (elapsedTime >= animationLength)
+        {
+            elapsedTime = 0f;
+            hitboxReporter.hit = false;
+            if (playerDistance < attackDistance)
+            {
+                animator.SetBool("isLanding", false);
+                currentState = State.Attacking;
+            }
+
+            if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
+            {
+                animator.SetBool("isLanding", false);
+                currentState = State.CloseRange;
+            }
+
+            if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
+            {
+                animator.SetBool("isLanding", false);
+                currentState = State.LongRange;
+            }
+        }
     }
 
 
@@ -305,7 +288,9 @@ public class EnemyAI : MonoBehaviour
     public void OnPlayerHit(GameObject player)
     {
         //Get enemy's health system and apply damage
+        Debug.Log("BANG");
         hitboxReporter.hit = true;
+        hitAreaHitbox.enabled = false;
         playerHealth.GetComponent<HealthSystem>().TakeDamage(jumpDamage);
     }
 

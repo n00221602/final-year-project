@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
 
     public Image health;
+    [SerializeField] private UniversalRendererData rendererData;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,7 +17,7 @@ public class HealthSystem : MonoBehaviour
 
     void Update()
     {
-        if (health.fillAmount <= 0)
+        if (health.fillAmount == 0f)
         {
             OnDeath();
         }
@@ -39,7 +42,20 @@ public class HealthSystem : MonoBehaviour
         if (gameObject.CompareTag("Player"))
         {
             Debug.Log("Player DEAD");
+
+            // Enable Player Mask render feature by name
+            if (rendererData != null)
+            {
+                var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerMask");
+                if (playerMaskFeature != null)
+                {
+                    //playerMaskFeature.SetActive(true);
+                }
+            }
+
             //Animation + game over screen
+
+            //set player mask back to false when player retrys.
         }
     }
 

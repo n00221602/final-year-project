@@ -11,6 +11,7 @@ TagManager:
   - PlayerCam
   - EnemyParent
   - HitUI
+  - ScriptCube
   layers:
   - Default
   - TransparentFX

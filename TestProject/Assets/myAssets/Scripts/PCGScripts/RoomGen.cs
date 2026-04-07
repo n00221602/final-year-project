@@ -14,42 +14,47 @@ public class RoomGen : MonoBehaviour
     public GameObject output;
     public GameObject innerWall;
     public GameObject innerWallCorner;
+    public GameObject teleporter;
 
     //THEMES - warehouse, lab, generic.
 
+    //TO-DO: make generation dynamic. each floor chooses 5 random layouts from an array. each floor has 7 rooms total with start and end always being the same.
+    // Inject start and end room layouts into the defined array. FloorCreator should hyptotheically work with no added changes.
+
     //Call the LayoutGen script
-    public LayoutGen roomLayout;
+    public LayoutGen layoutGen;
 
     //PARENT OBJECTS
-    [HideInInspector] public GameObject roomParent1;
-    [HideInInspector] public GameObject roomParent2;
-    [HideInInspector] public GameObject roomParent3;
-    [HideInInspector] public GameObject roomParent4;
-    [HideInInspector] public GameObject roomParent5;
+    //[HideInInspector] public GameObject roomParent1;
+    //[HideInInspector] public GameObject roomParent2;
+    //[HideInInspector] public GameObject roomParent3;
+    //[HideInInspector] public GameObject roomParent4;
+    //[HideInInspector] public GameObject roomParent5;
     [HideInInspector] public GameObject[] roomParent;
 
     //EVENT
     [HideInInspector] public UnityEvent OnRoomGenComplete;
+    [HideInInspector] public UnityEvent OnFloorComplete;
 
     //LAYOUTS
-    [HideInInspector] public int[,] layout1;
-    [HideInInspector] public int[,] layout2;
-    [HideInInspector] public int[,] layout3;
-    [HideInInspector] public int[,] layout4;
-    [HideInInspector] public int[,] layout5;
+    //[HideInInspector] public int[,] layout1;
+    //[HideInInspector] public int[,] layout2;
+    //[HideInInspector] public int[,] layout3;
+    //[HideInInspector] public int[,] layout4;
+    //[HideInInspector] public int[,] layout5;
 
-    //Rows and cols for each layout (will be made dynamic later)
-    [HideInInspector] public int rows1;
-    [HideInInspector] public int rows2;
-    [HideInInspector] public int rows3;
-    [HideInInspector] public int rows4;
-    [HideInInspector] public int rows5;
+    ////Rows and cols for each layout (will be made dynamic later)
+    //[HideInInspector] public int rows1;
+    //[HideInInspector] public int rows2;
+    //[HideInInspector] public int rows3;
+    //[HideInInspector] public int rows4;
+    //[HideInInspector] public int rows5;
 
-    [HideInInspector] public int cols1;
-    [HideInInspector] public int cols2;
-    [HideInInspector] public int cols3;
-    [HideInInspector] public int cols4;
-    [HideInInspector] public int cols5;
+    //[HideInInspector] public int cols1;
+    //[HideInInspector] public int cols2;
+    //[HideInInspector] public int cols3;
+    //[HideInInspector] public int cols4;
+    //[HideInInspector] public int cols5;
 
     //LISTS + ARRAYS
     [HideInInspector] public List<int[,]> layoutList;
@@ -67,6 +72,7 @@ public class RoomGen : MonoBehaviour
     private const int DOOR = 4;
     private const int OUTPUT = 5;
     private const int INNER_WALL = 6;
+    private const int TELEPORTER = 7;
 
     //Tile handler dictionary - maps tile type to handler function
     private Dictionary<int, System.Action<int, int, int, int[,], int, int>> tileHandlers;
@@ -76,10 +82,14 @@ public class RoomGen : MonoBehaviour
 
     void Start()
     {
+        SetRoomLayouts();
         InitializeTileHandlers();
-        RoomGeneration();
-    }
 
+        RoomGeneration();
+
+        //Reroll function when floor is cleared.
+        OnFloorComplete.AddListener(RoomReroll);
+    }
     void InitializeTileHandlers()
     {
         tileHandlers = new Dictionary<int, System.Action<int, int, int, int[,], int, int>>()
@@ -90,60 +100,69 @@ public class RoomGen : MonoBehaviour
             { FLOOR, HandleFloor },
             { DOOR, HandleDoor },
             { OUTPUT, HandleOutput },
-            { INNER_WALL, HandleInnerWall }
+            { INNER_WALL, HandleInnerWall },
+            { TELEPORTER, HandleTeleporter }
         };
 
         //Initialize position lookup
         tilePositionsByRoom = new Dictionary<int, Dictionary<int, List<Vector2Int>>>();
     }
 
-    void RoomGeneration()
+    void SetRoomLayouts()
     {
-        layout1 = roomLayout.layout1;
-        rows1 = layout1.GetLength(0);
-        cols1 = layout1.GetLength(1);
-
-        layout2 = roomLayout.layout2;
-        rows2 = layout2.GetLength(0);
-        cols2 = layout2.GetLength(1);
-
-        layout3 = roomLayout.layout3;
-        rows3 = layout3.GetLength(0);
-        cols3 = layout3.GetLength(1);
-
-        layout4 = roomLayout.layout4;
-        rows4 = layout4.GetLength(0);
-        cols4 = layout4.GetLength(1);
-
-        layout5 = roomLayout.layout5;
-        rows5 = layout5.GetLength(0);
-        cols5 = layout5.GetLength(1);
-
+        //Choose 5 random layouts from the LayoutGen list.
         layoutList = new List<int[,]>();
-        layoutList.Add(layout1);
-        layoutList.Add(layout2);
-        layoutList.Add(layout3);
-        layoutList.Add(layout4);
-        layoutList.Add(layout5);
+        for (int i = 0; i < 5; i++)
+        {
+            int randomIndex = Random.Range(0, layoutGen.allLayoutsList.Count);
+            Debug.Log("Random Index: " + randomIndex);
+            layoutList.Add(layoutGen.allLayoutsList[randomIndex]);
+        }
 
-        rowsArray = new int[] { rows1, rows2, rows3, rows4, rows5 };
-        colsArray = new int[] { cols1, cols2, cols3, cols4, cols5 };
+        //Inject start and end room layouts into the first and last index of the layoutList.
+        layoutList.Insert(0, layoutGen.layoutStart);
+        layoutList.Add(layoutGen.layoutEnd);
+
+        rowsArray = new int[layoutList.Count];
+        colsArray = new int[layoutList.Count];
+
+        for (int i = 0; i < layoutList.Count; i++)
+        {
+            rowsArray[i] = layoutList[i].GetLength(0);
+            colsArray[i] = layoutList[i].GetLength(1);
+        }
 
         //Parent Object. The instantiated prefabs are placed into this parent.
-        roomParent1 = new GameObject("Room");
-        roomParent2 = new GameObject("Room2");
-        roomParent3 = new GameObject("Room3");
-        roomParent4 = new GameObject("Room4");
-        roomParent5 = new GameObject("Room5");
+        roomParent = new GameObject[layoutList.Count];
 
-        roomParent = new GameObject[] { roomParent1, roomParent2, roomParent3, roomParent4, roomParent5 };
+        for (int i = 0; i < layoutList.Count; i++)
+        {
+            if (i == 0)
+            {
+                roomParent[i] = new GameObject("StartRoom");
+            }
+            else if (i == layoutList.Count - 1)
+            {
+                roomParent[i] = new GameObject("EndRoom");
+            }
+            else
+            {
+                roomParent[i] = new GameObject($"Room{i}");
+            }
+
+        }
+
+    }
+    void RoomGeneration()
+    {
+        //layoutList = new List<int[,]>(layoutGen.layoutList);
 
         //Creates layoutList based on the "layoutList" list index
         for (int i = 0; i < layoutList.Count; i++)
         {
             //Initialize tile position lookup for this room
             Dictionary<int, List<Vector2Int>> roomPositions = new Dictionary<int, List<Vector2Int>>();
-            for (int tileType = 0; tileType <= 6; tileType++)
+            for (int tileType = 0; tileType <= 7; tileType++)
             {
                 roomPositions[tileType] = new List<Vector2Int>();
             }
@@ -321,9 +340,14 @@ public class RoomGen : MonoBehaviour
         return Quaternion.identity;
     }
 
-    /// <summary>
-    /// Get all positions of a specific tile type in a room
-    /// </summary>
+    private void HandleTeleporter(int x, int y, int layoutIdx, int[,] layout, int rows, int cols)
+    {
+        Vector3 position = new Vector3(x, 0, -y);
+        Instantiate(teleporter, position, Quaternion.identity, roomParent[layoutIdx].transform);
+    }
+
+
+    //This returns a list of all [x,y] postions of a given value.
     public List<Vector2Int> GetTilePositions(int roomIndex, int tileType)
     {
         if (tilePositionsByRoom.TryGetValue(roomIndex, out var roomPositions))
@@ -369,5 +393,17 @@ public class RoomGen : MonoBehaviour
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
         meshCollider.sharedMesh = combinedMesh;
         meshCollider.convex = false;
+    }
+
+    void RoomReroll()
+    {
+        //Destroys current rooms and calls RoomGeneration() again. This is for when the player advances to a new floor.
+        for (int i = 0; i < roomParent.Length; i++)
+        {
+            Destroy(roomParent[i]);
+        }
+
+        SetRoomLayouts();
+        RoomGeneration();
     }
 }

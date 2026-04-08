@@ -23,6 +23,7 @@ public class RoomGen : MonoBehaviour
 
     //Call the LayoutGen script
     public LayoutGen layoutGen;
+    public RoomEnter roomEnter;
 
     //PARENT OBJECTS
     //[HideInInspector] public GameObject roomParent1;
@@ -112,7 +113,7 @@ public class RoomGen : MonoBehaviour
     {
         //Choose 5 random layouts from the LayoutGen list.
         layoutList = new List<int[,]>();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
             int randomIndex = Random.Range(0, layoutGen.allLayoutsList.Count);
             Debug.Log("Random Index: " + randomIndex);
@@ -406,4 +407,6 @@ public class RoomGen : MonoBehaviour
         SetRoomLayouts();
         RoomGeneration();
     }
+
+
 }

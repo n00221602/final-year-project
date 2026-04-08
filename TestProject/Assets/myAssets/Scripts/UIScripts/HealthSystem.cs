@@ -8,11 +8,15 @@ public class HealthSystem : MonoBehaviour
 
     public Image health;
     [SerializeField] private UniversalRendererData rendererData;
+    public Animator playerAnimator;
+
+    public PlayerMovement playerMovement;
+    public ThirdPersonCam thirdPersonCam;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        health.fillAmount = 1f;
+        health.fillAmount = 0.1f;
     }
 
     void Update()
@@ -43,17 +47,30 @@ public class HealthSystem : MonoBehaviour
         {
             Debug.Log("Player DEAD");
 
-            // Enable Player Mask render feature by name
+            //Disable player movement script and stop existing momentum.
+            thirdPersonCam.enabled = false;
+            playerMovement.enabled = false;
+            Rigidbody rb = playerMovement.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+
+            //Death animation and renderer feature are triggered
+            playerAnimator.SetTrigger("PlayerDeath");
             if (rendererData != null)
             {
-                var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerMask");
+                var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerDeathMask");
                 if (playerMaskFeature != null)
                 {
-                    //playerMaskFeature.SetActive(true);
+                    playerMaskFeature.SetActive(true);
                 }
             }
 
-            //Animation + game over screen
+            //Get all active agents and set them to inactive.
+
+            //Game over UI
 
             //set player mask back to false when player retrys.
         }

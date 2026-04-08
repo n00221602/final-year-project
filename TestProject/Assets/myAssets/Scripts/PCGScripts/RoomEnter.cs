@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RoomEnter : MonoBehaviour
 {
@@ -33,8 +34,22 @@ public class RoomEnter : MonoBehaviour
 
     void FindDoors()
     {
-        doors = GameObject.FindGameObjectsWithTag("Door");
+        GameObject[] allDoors = GameObject.FindGameObjectsWithTag("Door");
+
+        // Filter out any null/destroyed doors
+        List<GameObject> validDoors = new List<GameObject>();
+        foreach (GameObject door in allDoors)
+        {
+            if (door != null)
+            {
+                validDoors.Add(door);
+            }
+        }
+
+        doors = validDoors.ToArray();
+        Debug.Log("DOORS FOUND:" + doors.Length);
     }
+
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -44,10 +59,17 @@ public class RoomEnter : MonoBehaviour
             activeTrigger = collider.gameObject.transform.localPosition;
 
             //Get all doors and close them. This is to prevent the player from leaving the room before the enemies are spawned.
-            foreach (GameObject door in doors)
+            if (doors != null && doors.Length > 0)
             {
-                door.transform.position = new Vector3(door.transform.position.x, 3f, door.transform.position.z);
+                foreach (GameObject door in doors)
+                {
+                    if (door != null)  // Check if door still exists
+                    {
+                        door.transform.position = new Vector3(door.transform.position.x, 3f, door.transform.position.z);
+                    }
+                }
             }
+
 
             isTriggered = true;
             collider.gameObject.SetActive(false);
@@ -152,9 +174,15 @@ public class RoomEnter : MonoBehaviour
         activeRoom = null;
         activeRoomParent = null;
 
-        foreach (GameObject door in doors)
+        if (doors != null && doors.Length > 0)
         {
-            door.transform.position = new Vector3(door.transform.position.x, -3f, door.transform.position.z);
+            foreach (GameObject door in doors)
+            {
+                if (door != null)  // Check if door still exists
+                {
+                    door.transform.position = new Vector3(door.transform.position.x, -3f, door.transform.position.z);
+                }
+            }
         }
 
         Debug.Log("ROOM CLEARED");

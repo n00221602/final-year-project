@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerDeathMask
-  m_Shader: {fileID: -6465566751694194690, guid: 5f8b43aa197c66d47ac5928ced1fee10, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 635d9da528f93bc4d8a4a09e38e1730e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -38,17 +38,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float: 0.5
-    - _HatchBoldness: 0.2
-    - _HatchFrequency: 30
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _step: 0
+    - _Step: 0.5
     m_Colors:
+    - _Colour: {r: 0, g: 0, b: 0, a: 1}
+    - _ColourDark: {r: 0, g: 0, b: 0, a: 0}
+    - _ColourLight: {r: 1, g: 0, b: 0.07843113, a: 0}
+    - _MainLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _SceneTint: {r: 0, g: 0, b: 0, a: 1}
+    - _Vector3: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &9018270156901165936
+--- !u!114 &7481174123766838501
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

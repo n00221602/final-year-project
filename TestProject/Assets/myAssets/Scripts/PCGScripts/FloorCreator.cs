@@ -10,13 +10,6 @@ public class FloorCreator : MonoBehaviour
 
     public Vector3[] outputPosArray;
 
-    bool top;
-    bool bottom;
-    bool left;
-    bool right;
-
-    int floorTarget = 3;
-
     Quaternion currentDoorRotation = Quaternion.Euler(0, 0, 0);
     Quaternion roomRotation = Quaternion.Euler(0, 0, 0);
 

@@ -53,8 +53,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HatchBoldness: 0.3
-    - _HatchFrequency: 53.71
+    - _HatchBoldness: 0.406
+    - _HatchFrequency: 78.04
     - _Intensity: 0.75
     - _MASKTEXTURE: 0
     - _Max: 1
@@ -62,8 +62,8 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _HashRemapIn: {r: 0, g: -1, b: 0, a: 0}
-    - _HashRemapOut: {r: 9.26, g: 1, b: 0, a: 0}
+    - _HashRemapOut: {r: 0.675, g: 1, b: 0, a: 0}
     - _RemapIn: {r: 0, g: -1, b: 0, a: 0}
-    - _RemapOut: {r: 1, g: 1, b: 0, a: 0}
+    - _RemapOut: {r: 0.4, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

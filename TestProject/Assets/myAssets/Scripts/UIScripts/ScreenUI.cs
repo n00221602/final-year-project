@@ -1,11 +1,16 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class ScreenUI : MonoBehaviour
 {
     private GameObject playerCam;
     private GameObject[] existingEnemies;
+    public GameObject gameOverUI;
 
-    public RoomEnter roomEnter;
+    [SerializeField] private UniversalRendererData rendererData;
+
+    //public RoomEnter roomEnter;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,5 +34,17 @@ public class ScreenUI : MonoBehaviour
         {
             enemyUI.transform.LookAt(playerCam.transform);
         }
+    }
+
+    public void PlayerRetry()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void PlayerQuit()
+    {
+        Application.Quit();
     }
 }

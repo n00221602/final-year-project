@@ -134,7 +134,19 @@ public class RoomEnter : MonoBehaviour
 
     void SpawnEnemy()
     {
-        spawnEnemies = true;
+        List<Vector2Int> teleporterPosition = roomGen.GetTilePositions(activeRoomIndex, 7);
+
+        if (teleporterPosition.Count > 0)
+        {
+            Debug.Log("TELEPORTER FOUND, NO ENEMIES SPAWNED");
+            return;
+        }
+        else
+        {
+            spawnEnemies = true;
+        }
+
+
 
         //Get all floor positions using position lookup instead of nested loops
         List<Vector2Int> floorPositions = roomGen.GetTilePositions(activeRoomIndex, 3); // 3 = FLOOR

@@ -200,6 +200,11 @@ public class CombatSystem : MonoBehaviour
         hitEnemy.GetComponent<HealthSystem>().TakeDamage(playerDamage);
     }
 
+    void SecondaryShoot()
+    {
+
+    }
+
     void SecondaryHitboxOn()
     {
         Debug.Log("BANG");

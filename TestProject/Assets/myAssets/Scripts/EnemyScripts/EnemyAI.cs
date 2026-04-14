@@ -10,7 +10,7 @@ public class EnemyAI : MonoBehaviour
     //Fix timing for the enemy charge.
 
     public GameObject player;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     public Animator animator;
     public GameObject hitArea;
     public HitboxReporter hitboxReporter;
@@ -27,9 +27,7 @@ public class EnemyAI : MonoBehaviour
     public enum State
     {
         Idle,
-        CloseRange,
-        Attacking,
-        LongRange,
+        Aiming,
         Charging,
         Landing
     }
@@ -37,8 +35,8 @@ public class EnemyAI : MonoBehaviour
     private State currentState;
     float playerDistance;
 
-    float closeRangeDistance = 5f;
-    float longRangeDistance = 10f;
+    //float closeRangeDistance = 5f;
+    float aimingDistance = 10f;
     float attackDistance = 1f;
     float elapsedTime;
     bool hasCharged = false;
@@ -72,14 +70,8 @@ public class EnemyAI : MonoBehaviour
             case State.Idle:
                 EnemyIdle();
                 break;
-            case State.CloseRange:
-                EnemyCloseRange();
-                break;
-            case State.Attacking:
-                EnemyAttack();
-                break;
-            case State.LongRange:
-                EnemyLongRangeAim();
+            case State.Aiming:
+                EnemyAiming();
                 break;
             case State.Charging:
                 EnemyCharge();
@@ -103,40 +95,41 @@ public class EnemyAI : MonoBehaviour
 
         //Change state based on player distance.
         //Close Range
-        if (playerDistance < closeRangeDistance)
+        //if (playerDistance < closeRangeDistance)
+        //{
+        //    animator.SetBool("isIdle", false);
+        //    currentState = State.CloseRange;
+        //}
+
+        //If player is between close and long range distance, change to Aiming state
+        if (playerDistance < aimingDistance)
         {
             animator.SetBool("isIdle", false);
-            currentState = State.CloseRange;
-        }
-        //If player is between close and long range distance, change to LongRange state
-        else if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
-        {
-            animator.SetBool("isIdle", false);
-            currentState = State.LongRange;
+            currentState = State.Aiming;
         }
     }
 
     //This state checks if the player is within its close range only it's in the enemy view.
-    void EnemyCloseRange()
-    {
-        animator.SetBool("isCloseRange", true);
-        agent.isStopped = false;
-        agent.transform.LookAt(player.transform);
-        agent.SetDestination(player.transform.position);
-        Debug.Log("CLOSE RANGE");
+    //void EnemyCloseRange()
+    //{
+    //    animator.SetBool("isCloseRange", true);
+    //    agent.isStopped = false;
+    //    agent.transform.LookAt(player.transform);
+    //    agent.SetDestination(player.transform.position);
+    //    Debug.Log("CLOSE RANGE");
 
-        if (playerDistance < attackDistance)
-        {
-            animator.SetBool("isCloseRange", false);
-            currentState = State.Attacking;
-        }
+    //    if (playerDistance < attackDistance)
+    //    {
+    //        animator.SetBool("isCloseRange", false);
+    //        currentState = State.Attacking;
+    //    }
 
-        if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
-        {
-            animator.SetBool("isCloseRange", false);
-            currentState = State.LongRange;
-        }
-    }
+    //    if (playerDistance > closeRangeDistance && playerDistance < aimingDistance)
+    //    {
+    //        animator.SetBool("isCloseRange", false);
+    //        currentState = State.Aiming;
+    //    }
+    //}
 
     void EnemyAttack()
     {
@@ -152,19 +145,19 @@ public class EnemyAI : MonoBehaviour
 
         //3 if statements: for idle, close and long range.
 
-        if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
+        //if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
+        //{
+        //    animator.SetBool("isAttacking", false);
+        //    currentState = State.CloseRange;
+        //}
+
+        if (playerDistance < aimingDistance)
         {
             animator.SetBool("isAttacking", false);
-            currentState = State.CloseRange;
+            currentState = State.Aiming;
         }
 
-        if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
-        {
-            animator.SetBool("isAttacking", false);
-            currentState = State.LongRange;
-        }
-
-        //if (playerDistance > longRangeDistance)
+        //if (playerDistance > aimingDistance)
         //{
         //    currentState = State.Idle;
         //}
@@ -172,9 +165,9 @@ public class EnemyAI : MonoBehaviour
     }
 
     //This state checks if the player is within its long range only it's in the enemy view.
-    void EnemyLongRangeAim()
+    void EnemyAiming()
     {
-        animator.SetBool("isLongRangeAim", true);
+        animator.SetBool("isAiming", true);
         Debug.Log("AIMING");
 
         elapsedTime += Time.deltaTime;
@@ -194,7 +187,7 @@ public class EnemyAI : MonoBehaviour
 
         if (elapsedTime > 4f)
         {
-            animator.SetBool("isLongRangeAim", false);
+            animator.SetBool("isAiming", false);
             elapsedTime = 0f;
             currentState = State.Charging;
         }
@@ -261,22 +254,22 @@ public class EnemyAI : MonoBehaviour
         {
             elapsedTime = 0f;
             hitboxReporter.hit = false;
-            if (playerDistance < attackDistance)
-            {
-                animator.SetBool("isLanding", false);
-                currentState = State.Attacking;
-            }
+            //if (playerDistance < attackDistance)
+            //{
+            //    animator.SetBool("isLanding", false);
+            //    currentState = State.Attacking;
+            //}
 
-            if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
-            {
-                animator.SetBool("isLanding", false);
-                currentState = State.CloseRange;
-            }
+            //if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
+            //{
+            //    animator.SetBool("isLanding", false);
+            //    currentState = State.CloseRange;
+            //}
 
-            if (playerDistance > closeRangeDistance && playerDistance < longRangeDistance)
+            if (playerDistance < aimingDistance)
             {
                 animator.SetBool("isLanding", false);
-                currentState = State.LongRange;
+                currentState = State.Aiming;
             }
         }
     }

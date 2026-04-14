@@ -12,11 +12,24 @@ public class HealthSystem : MonoBehaviour
 
     public PlayerMovement playerMovement;
     public ThirdPersonCam thirdPersonCam;
+    public ScreenUI screenUI;
+    public GameObject playerDeathLight;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         health.fillAmount = 0.1f;
+
+        if (rendererData != null)
+        {
+            var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerDeathMask");
+            if (playerMaskFeature != null)
+            {
+                playerDeathLight.SetActive(false);
+                playerMaskFeature.SetActive(false);
+
+            }
+        }
     }
 
     void Update()
@@ -39,8 +52,7 @@ public class HealthSystem : MonoBehaviour
         if (gameObject.CompareTag("Enemy"))
         {
             Debug.Log(gameObject.name + " DEAD");
-
-            Destroy(gameObject);
+            Destroy(gameObject.transform.parent.gameObject);
         }
 
         if (gameObject.CompareTag("Player"))
@@ -64,15 +76,13 @@ public class HealthSystem : MonoBehaviour
                 var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerDeathMask");
                 if (playerMaskFeature != null)
                 {
+                    playerDeathLight.SetActive(true);
                     playerMaskFeature.SetActive(true);
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    screenUI.gameOverUI.SetActive(true);
                 }
             }
-
-            //Get all active agents and set them to inactive.
-
-            //Game over UI
-
-            //set player mask back to false when player retrys.
         }
     }
 

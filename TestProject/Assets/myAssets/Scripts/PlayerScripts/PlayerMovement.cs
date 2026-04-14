@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
 
         MyInput();
 
-        SpeedControl();
+        //SpeedControl();
 
         //Handle drag
         if (isGrounded)
@@ -92,10 +92,10 @@ public class PlayerMovement : MonoBehaviour
     {
         MovePlayer();
 
-        if (horizontalInput == 0 && verticalInput == 0)
-        {
-            rb.linearVelocity = new Vector3(0f, 0, 0f);
-        }
+        //if (horizontalInput == 0 && verticalInput == 0)
+        //{
+        //    rb.linearVelocity = new Vector3(0f, 0, 0f);
+        //}
     }
 
     private void MyInput()
@@ -110,9 +110,19 @@ public class PlayerMovement : MonoBehaviour
         if (combatSystem != null && combatSystem.isAttacking) return;
 
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        //transform.rotation = Quaternion.LookRotation(moveDirection);
+        if (moveDirection != Vector3.zero)
+        {
+            // Set velocity directly instead of adding force
+            Vector3 targetVelocity = moveDirection.normalized * moveSpeed;
+            rb.linearVelocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
+        else
+        {
+            // Stop immediately when no input
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+        }
     }
 
 
@@ -131,8 +141,10 @@ public class PlayerMovement : MonoBehaviour
     {
         dashing = true;
         animator.SetBool("isDashing", true);
+
         moveSpeed = dashSpeed;
-        //rb.AddForce(orientation.forward * moveSpeed * 10f, ForceMode.Force);
+        //Vector3 dashVelocity = moveDirection.normalized * dashSpeed;
+        //rb.linearVelocity = new Vector3(dashVelocity.x, rb.linearVelocity.y, dashVelocity.z);
 
         //ResetDash is called after dashDuration is over.
         Invoke(nameof(ResetDash), dashDuration);

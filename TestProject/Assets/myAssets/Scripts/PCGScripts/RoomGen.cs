@@ -387,8 +387,9 @@ public class RoomGen : MonoBehaviour
         //Increase vertices limit
         combinedMesh.indexFormat = IndexFormat.UInt32;
         combinedMesh.CombineMeshes(combine, true, true);
-        combinedMesh.RecalculateNormals();
-        combinedMesh.RecalculateBounds();
+        //combinedMesh.RecalculateNormals();
+        //combinedMesh.RecalculateBounds();
+        //combinedMesh.RecalculateTangents();
 
         // Add MeshCollider to the roomParent
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();

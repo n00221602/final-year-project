@@ -44,7 +44,7 @@ Material:
     m_Colors:
     - _Colour: {r: 0, g: 0, b: 0, a: 1}
     - _ColourDark: {r: 0, g: 0, b: 0, a: 0}
-    - _ColourLight: {r: 1, g: 0, b: 0.07843113, a: 0}
+    - _ColourLight: {r: 1, g: 0, b: 0, a: 0}
     - _MainLightColor: {r: 0, g: 0, b: 0, a: 0}
     - _SceneTint: {r: 0, g: 0, b: 0, a: 1}
     - _Vector3: {r: 0, g: 0, b: 0, a: 0}

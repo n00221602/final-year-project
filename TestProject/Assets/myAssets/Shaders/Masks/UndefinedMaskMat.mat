@@ -44,11 +44,11 @@ Material:
     - _HatchFrequency: 30
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Step: 0.78
+    - _Step: 0.75
     - _step: 0
     m_Colors:
     - _MainLightColor: {r: 0.24, g: 0.5, b: 0, a: 0}
-    - _SceneTint: {r: 0.044025064, g: 0.044025064, b: 0.044025064, a: 1}
+    - _SceneTint: {r: 1, g: 1, b: 1, a: 1}
     - _SceneTint_1: {r: 1, g: 1, b: 1, a: 1}
     - _SceneTint_2: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 1}
     - _Vector3: {r: 0.68, g: 0.62, b: 0.58, a: 0}

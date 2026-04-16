@@ -45,6 +45,6 @@ public class ScreenUI : MonoBehaviour
 
     public void PlayerQuit()
     {
-        Application.Quit();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
     }
 }

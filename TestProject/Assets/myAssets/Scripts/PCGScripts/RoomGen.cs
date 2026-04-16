@@ -113,7 +113,7 @@ public class RoomGen : MonoBehaviour
     {
         //Choose 5 random layouts from the LayoutGen list.
         layoutList = new List<int[,]>();
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 4; i++)
         {
             int randomIndex = Random.Range(0, layoutGen.allLayoutsList.Count);
             Debug.Log("Random Index: " + randomIndex);
@@ -387,9 +387,8 @@ public class RoomGen : MonoBehaviour
         //Increase vertices limit
         combinedMesh.indexFormat = IndexFormat.UInt32;
         combinedMesh.CombineMeshes(combine, true, true);
-        //combinedMesh.RecalculateNormals();
-        //combinedMesh.RecalculateBounds();
-        //combinedMesh.RecalculateTangents();
+        combinedMesh.RecalculateNormals();
+        combinedMesh.RecalculateBounds();
 
         // Add MeshCollider to the roomParent
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
@@ -404,6 +403,9 @@ public class RoomGen : MonoBehaviour
         {
             Destroy(roomParent[i]);
         }
+
+        //Clear the used rooms list from RoomEnter
+        roomEnter.usedRoomIndices.Clear();
 
         SetRoomLayouts();
         RoomGeneration();

@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     //TODO - change bool checks to run once between switching states instead of all at once for each function.
     //Fix timing for the enemy charge.
 
-    public GameObject player;
+    private Transform player;
     public NavMeshAgent agent;
     public Animator animator;
     public GameObject hitArea;
@@ -19,7 +19,7 @@ public class EnemyAI : MonoBehaviour
 
     public HealthSystem playerHealth;
 
-    float jumpDamage = 1f;
+    float jumpDamage = 0.25f;
 
     AnimatorStateInfo stateInfo;
     private Vector3 chargingStartPosition;
@@ -58,6 +58,9 @@ public class EnemyAI : MonoBehaviour
         //Collider hitareaHitbox = hitArea.GetComponent<Collider>();
         hitAreaHitbox.enabled = false;
 
+        player = GameObject.Find("Player").transform;
+        playerHealth = GameObject.Find("Player UI").GetComponent<HealthSystem>();
+
     }
 
     void Update()
@@ -88,7 +91,6 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetBool("isIdle", true);
 
-        Debug.Log("IDLE");
         //animator.SetBool("isCloseRange", false);
         agent.isStopped = true;
         agent.ResetPath();
@@ -168,7 +170,6 @@ public class EnemyAI : MonoBehaviour
     void EnemyAiming()
     {
         animator.SetBool("isAiming", true);
-        Debug.Log("AIMING");
 
         elapsedTime += Time.deltaTime;
         Vector3 playerDirection = player.transform.position;
@@ -178,14 +179,14 @@ public class EnemyAI : MonoBehaviour
         hitArea.SetActive(true);
         hitArea.transform.position = new Vector3(player.transform.position.x, hitArea.transform.position.y, player.transform.position.z);
 
-        if (elapsedTime > 3f)
+        if (elapsedTime > 2f)
         {
             lastPlayerPosition = player.transform.position;
             agent.transform.LookAt(lastPlayerPosition);
             hitArea.transform.position = new Vector3(lastPlayerPosition.x, hitArea.transform.position.y, lastPlayerPosition.z);
         }
 
-        if (elapsedTime > 4f)
+        if (elapsedTime > 2.5f)
         {
             animator.SetBool("isAiming", false);
             elapsedTime = 0f;
@@ -197,7 +198,6 @@ public class EnemyAI : MonoBehaviour
     void EnemyCharge()
     {
         animator.SetBool("isCharging", true);
-        Debug.Log("CHARGING");
 
         float chargeDuration = 1.5f;
         float animationSpeed = 1f / chargeDuration;
@@ -227,7 +227,6 @@ public class EnemyAI : MonoBehaviour
     void EnemyLand()
     {
         animator.SetBool("isLanding", true);
-        Debug.Log("LANDING");
         agent.isStopped = true;
         hitAreaHitbox.enabled = true;
 
@@ -281,7 +280,6 @@ public class EnemyAI : MonoBehaviour
     public void OnPlayerHit(GameObject player)
     {
         //Get enemy's health system and apply damage
-        Debug.Log("BANG");
         hitboxReporter.hit = true;
         hitAreaHitbox.enabled = false;
         playerHealth.GetComponent<HealthSystem>().TakeDamage(jumpDamage);

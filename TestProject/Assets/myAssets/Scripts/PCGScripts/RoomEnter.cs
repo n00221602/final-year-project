@@ -8,7 +8,8 @@ public class RoomEnter : MonoBehaviour
     public LayoutGen layoutGen;
     public FloorCreator floorCreator;
     public RoomGen roomGen;
-    public GameObject enemy;
+    private GameObject enemy;
+    public GameObject[] enemyArray;
     [HideInInspector] public GameObject[] doors;
 
     [HideInInspector] public int[,] activeRoom;
@@ -27,6 +28,7 @@ public class RoomEnter : MonoBehaviour
 
     Vector3 spawnPoint;
     Vector3 activeTrigger;
+    [HideInInspector] public List<int> usedRoomIndices;
     void Awake()
     {
         roomGen.OnRoomGenComplete.AddListener(FindDoors);
@@ -101,6 +103,8 @@ public class RoomEnter : MonoBehaviour
         //This function loops through each layout and checks if the output position of the current room matches with any of the output positions in the layouts.
         for (int i = 0; i < roomGen.layoutList.Count; i++)
         {
+            if (usedRoomIndices.Contains(i))
+                continue;
             //Loop through each output position to check which one matches the current layout's output position. OutputPosArray containts the world space postions of the outputs (5) for each layout.
             for (int j = 0; j < floorCreator.outputPosArray.Length; j++)
             {
@@ -117,6 +121,7 @@ public class RoomEnter : MonoBehaviour
                         activeRoom = roomGen.layoutList[i];
                         activeRoomIndex = i;
                         activeRoomParent = roomGen.roomParent[i];
+                        usedRoomIndices.Add(i);
                         LoadEnemy();
                         return;
                     }
@@ -128,7 +133,7 @@ public class RoomEnter : MonoBehaviour
     //Spawn enemys after a short delay.
     void LoadEnemy()
     {
-        float timer = 1f;
+        float timer = 1.5f;
         Invoke(nameof(SpawnEnemy), timer);
     }
 
@@ -145,9 +150,6 @@ public class RoomEnter : MonoBehaviour
         {
             spawnEnemies = true;
         }
-
-
-
         //Get all floor positions using position lookup instead of nested loops
         List<Vector2Int> floorPositions = roomGen.GetTilePositions(activeRoomIndex, 3); // 3 = FLOOR
 
@@ -169,6 +171,18 @@ public class RoomEnter : MonoBehaviour
         {
             //Debug.Log("CURRENT ITERATION: " + i);
             randomIndex = Random.Range(0, spawnPointList.Count);
+            //Make ranged enemies more common.
+            float value = Random.value;
+
+            if (value > 0.33f)
+            {
+                enemy = enemyArray[0]; // Laser enemy
+            }
+            else
+            {
+                enemy = enemyArray[1]; // Jumper enemy
+            }
+            enemy = enemyArray[Random.Range(0, enemyArray.Length)];
 
             spawnPoint = spawnPointList[randomIndex];
 

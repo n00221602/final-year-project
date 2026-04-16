@@ -24,6 +24,7 @@ public class LaserEnemyAI : MonoBehaviour
     private float dodgeWindow = 3.5f;
     private float aimTime = 4f;
     private Vector3 lastPlayerPosition;
+    private float laserDamage = 0.1f;
 
     public GameObject laserGun;
 
@@ -152,7 +153,7 @@ public class LaserEnemyAI : MonoBehaviour
                 //Debug.Log("PLAYER DAMAGED");
                 //laserLineRenderer.enabled = false;
                 currentState = State.Cooldown;
-                healthSystem.TakeDamage(0.1f);
+                healthSystem.TakeDamage(laserDamage);
                 //healthSystem.PlayerGracePeriod(agent);
 
             }

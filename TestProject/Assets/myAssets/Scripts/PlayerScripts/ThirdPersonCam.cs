@@ -33,11 +33,11 @@ public class ThirdPersonCam : MonoBehaviour
         Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         //The direction that the player is facing will only change is there is an input and that the player is not attacking.
-        //if (inputDir != Vector3.zero && !combatSystem.isAttacking)
-        //{
-        //    //player.forward = inputDir.normalized;
-        //    player.transform.rotation = Quaternion.LookRotation(inputDir);
-        //}
+        if (inputDir != Vector3.zero && !combatSystem.isAttacking)
+        {
+            //player.forward = inputDir.normalized;
+            player.transform.rotation = Quaternion.LookRotation(inputDir);
+        }
 
     }
 }

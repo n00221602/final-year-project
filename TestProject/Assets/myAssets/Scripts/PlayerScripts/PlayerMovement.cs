@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 playerFacing;
     public float dashCooldownTimer;
+    private bool cachedIsGrounded;
+    private float groundCheckTimer;
+    private const float GROUND_CHECK_INTERVAL = 0.05f;
 
     public Transform orientation;
 
@@ -43,12 +46,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        //Grounded check
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        //Grounded check - cache every 50ms to reduce physics calls
+        groundCheckTimer += Time.deltaTime;
+        if (groundCheckTimer >= GROUND_CHECK_INTERVAL)
+        {
+            isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+            cachedIsGrounded = isGrounded;
+            groundCheckTimer = 0f;
+        }
+        else
+        {
+            isGrounded = cachedIsGrounded;
+        }
 
         MyInput();
 
-        //SpeedControl();
+        SpeedControl();
 
         //Handle drag
         if (isGrounded)
@@ -107,22 +120,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (combatSystem != null && combatSystem.isAttacking) return;
-
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        if (moveDirection != Vector3.zero)
-        {
-            // Set velocity directly instead of adding force
-            Vector3 targetVelocity = moveDirection.normalized * moveSpeed;
-            rb.linearVelocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
-            transform.rotation = Quaternion.LookRotation(moveDirection);
-        }
-        else
-        {
-            // Stop immediately when no input
-            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-        }
+        //Snap rotation instantly to face the movement direction
+
+        //if (moveDirection != Vector3.zero)
+        //{
+        //    transform.rotation = Quaternion.LookRotation(moveDirection);
+        //}
     }
 
 

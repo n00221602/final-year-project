@@ -18,7 +18,7 @@ public class HealthSystem : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        health.fillAmount = 0.1f;
+        health.fillAmount = 1f;
 
         if (rendererData != null)
         {

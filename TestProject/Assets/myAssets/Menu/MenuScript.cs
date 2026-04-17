@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -8,16 +9,27 @@ public class MenuScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject menuUI;
     public GameObject generateUI;
-    public TMP_InputField inputField;
+    //public TMP_InputField inputField;
+    public RectTransform gridParent;
     public TMP_InputField widthInputField;
     public TMP_InputField heightInputField;
+    public GameObject gridPrefab;
 
     public GridLayoutGroup gridLayoutGroup;
+
+    [HideInInspector] public int[,] userLayout;
 
     string widthInput;
     string heightInput;
 
-    //public RoomGen roomGen;
+    float squareInputAmount;
+    int currentSquareAmount;
+    float totalSquaresWidth;
+    float totalSquaresHeight;
+
+    [HideInInspector] public UnityEvent onUserSubmit;
+
+    public RoomGen roomGen;
 
     void Start()
     {
@@ -26,6 +38,10 @@ public class MenuScript : MonoBehaviour
         {
             generateUI.SetActive(false);
         }
+
+        //Set default grid width and height
+        widthInput = "5";
+        heightInput = "5";
     }
 
     // Update is called once per frame
@@ -55,32 +71,39 @@ public class MenuScript : MonoBehaviour
 
     public void OnSubmitButton()
     {
-        //This script takes in the 2D arrays created from the text input field in GenerateUI and generates a level based on the characters in the array.
-        ;
+        //Create a 2D array based on the width and height inputted by the user
+        int[,] gridArray = new int[(int)totalSquaresHeight, (int)totalSquaresWidth];
 
+        int squareIndex = 0;
 
-        string submitedText = inputField.text;
-
-    }
-
-    public void StoreInput()
-    {
-        //store the input text from inputField as a variable. convert to to json?
-        Debug.Log("Input: " + inputField.text);
-
-    }
-
-    public void StoreGridSize(TMP_InputField inputFieldThatChanged)
-    {
-        if (inputFieldThatChanged == widthInputField)
+        //Loop through each index and assign the corresponding square from the grid.
+        for (int y = 0; y < gridArray.GetLength(0); y++)
         {
-            widthInput = inputFieldThatChanged.text;
+            for (int x = 0; x < gridArray.GetLength(1); x++)
+            {
+                gridArray[y, x] = int.Parse(gridParent.GetChild(squareIndex).GetComponentInChildren<TMP_InputField>().text);
+                squareIndex++;
+                Debug.Log("Grid Array Value at [" + y + ", " + x + "]: " + gridArray[y, x]);
+
+                Debug.Log("Child Amount: " + squareIndex);
+            }
+        }
+
+        roomGen.CreateRoomPreview(gridArray);
+
+    }
+
+    public void StoreGridSize(TMP_InputField inputField)
+    {
+        if (inputField == widthInputField)
+        {
+            widthInput = inputField.text;
             //widthInput = 
             Debug.Log("Width: " + widthInput);
         }
-        else if (inputFieldThatChanged == heightInputField)
+        else if (inputField == heightInputField)
         {
-            heightInput = inputFieldThatChanged.text;
+            heightInput = inputField.text;
             Debug.Log("Height: " + heightInput);
         }
     }
@@ -90,8 +113,33 @@ public class MenuScript : MonoBehaviour
 
     public void GridHandler()
     {
-        //gridParent.sizeDelta = new Vector2(500, 500);
-        gridLayoutGroup.cellSize = new Vector2(int.Parse(widthInput) / 400, int.Parse(heightInput) / 400);
+        float gridParentWidth = gridParent.sizeDelta[0];
+        float gridParentHeight = gridParent.sizeDelta[1];
+
+        totalSquaresWidth = float.Parse(widthInput);
+        totalSquaresHeight = float.Parse(heightInput);
+
+        squareInputAmount = totalSquaresWidth * totalSquaresHeight;
+        currentSquareAmount = gridParent.childCount;
+
+        if (currentSquareAmount > squareInputAmount)
+        {
+            for (int i = 0; i < currentSquareAmount - squareInputAmount; i++)
+            {
+                Destroy(gridParent.GetChild(i).gameObject);
+            }
+        }
+        else if (currentSquareAmount < squareInputAmount)
+        {
+            for (int i = currentSquareAmount; i < squareInputAmount; i++)
+            {
+                Instantiate(gridPrefab, gridParent);
+            }
+        }
+
+
+        Debug.Log(gridParentWidth);
+        gridLayoutGroup.cellSize = new Vector2(gridParentWidth / totalSquaresWidth, gridParentHeight / totalSquaresHeight);
     }
 }
 

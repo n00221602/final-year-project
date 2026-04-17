@@ -24,38 +24,12 @@ public class RoomGen : MonoBehaviour
     //Call the LayoutGen script
     public LayoutGen layoutGen;
     public RoomEnter roomEnter;
-
-    //PARENT OBJECTS
-    //[HideInInspector] public GameObject roomParent1;
-    //[HideInInspector] public GameObject roomParent2;
-    //[HideInInspector] public GameObject roomParent3;
-    //[HideInInspector] public GameObject roomParent4;
-    //[HideInInspector] public GameObject roomParent5;
+    public MenuScript menuScript;
     [HideInInspector] public GameObject[] roomParent;
 
     //EVENT
     [HideInInspector] public UnityEvent OnRoomGenComplete;
     [HideInInspector] public UnityEvent OnFloorComplete;
-
-    //LAYOUTS
-    //[HideInInspector] public int[,] layout1;
-    //[HideInInspector] public int[,] layout2;
-    //[HideInInspector] public int[,] layout3;
-    //[HideInInspector] public int[,] layout4;
-    //[HideInInspector] public int[,] layout5;
-
-    ////Rows and cols for each layout (will be made dynamic later)
-    //[HideInInspector] public int rows1;
-    //[HideInInspector] public int rows2;
-    //[HideInInspector] public int rows3;
-    //[HideInInspector] public int rows4;
-    //[HideInInspector] public int rows5;
-
-    //[HideInInspector] public int cols1;
-    //[HideInInspector] public int cols2;
-    //[HideInInspector] public int cols3;
-    //[HideInInspector] public int cols4;
-    //[HideInInspector] public int cols5;
 
     //LISTS + ARRAYS
     [HideInInspector] public List<int[,]> layoutList;
@@ -112,6 +86,7 @@ public class RoomGen : MonoBehaviour
     void SetRoomLayouts()
     {
         //Choose 5 random layouts from the LayoutGen list.
+
         layoutList = new List<int[,]>();
         for (int i = 0; i < 4; i++)
         {
@@ -411,5 +386,35 @@ public class RoomGen : MonoBehaviour
         RoomGeneration();
     }
 
+    public void CreateRoomPreview(int[,] userLayout)
+    {
+        layoutList.Clear();
+        layoutList.Add(userLayout);
 
+        rowsArray = new int[1];
+        colsArray = new int[1];
+
+        rowsArray[0] = userLayout.GetLength(0);
+        colsArray[0] = userLayout.GetLength(1);
+
+        //Clear any existing rooms
+        if (roomParent != null)
+        {
+            foreach (GameObject room in roomParent)
+            {
+                Destroy(room);
+            }
+        }
+
+        //Set roomParent to an array with a single index.
+        roomParent = new GameObject[1];
+        roomParent[0] = new GameObject("UserPreviewRoom");
+
+        if (tileHandlers == null)
+        {
+            InitializeTileHandlers();
+        }
+
+        RoomGeneration();
+    }
 }

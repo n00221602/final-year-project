@@ -53,9 +53,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HatchBoldness: 0.406
-    - _HatchFrequency: 78.04
-    - _Intensity: 0.75
+    - _HatchBoldness: 0.3
+    - _HatchFrequency: 65
+    - _Intensity: 0.77
     - _MASKTEXTURE: 0
     - _Max: 1
     - _Min: 0.69

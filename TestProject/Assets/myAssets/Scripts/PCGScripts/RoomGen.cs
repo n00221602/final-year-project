@@ -95,6 +95,12 @@ public class RoomGen : MonoBehaviour
             layoutList.Add(layoutGen.allLayoutsList[randomIndex]);
         }
 
+        //Have another loop for adding user-made layouts.
+        for (int i = 0; i < menuScript.userLayoutList.Count; i++)
+        {
+            layoutList.Add(menuScript.userLayoutList[i]);
+        }
+
         //Inject start and end room layouts into the first and last index of the layoutList.
         layoutList.Insert(0, layoutGen.layoutStart);
         layoutList.Add(layoutGen.layoutEnd);

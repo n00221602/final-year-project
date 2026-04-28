@@ -51,7 +51,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float: 0.5
+    - _Float: 0
     - _HatchBoldness: 0.2
     - _HatchFrequency: 30
     - _QueueControl: 0

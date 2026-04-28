@@ -13,6 +13,7 @@ public class MenuScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public GameObject menuUI;
     public GameObject generateUI;
+    public GameObject viewLayoutsUI;
     //public TMP_InputField inputField;
     public RectTransform gridHolder;
     public TMP_InputField widthInputField;
@@ -39,14 +40,15 @@ public class MenuScript : MonoBehaviour
     void Start()
     {
         //Make sure only the menu UI is active when the scene first starts
-        if (generateUI.activeSelf)
-        {
-            generateUI.SetActive(false);
-        }
+        menuUI.SetActive(true);
+        generateUI.SetActive(false);
+        viewLayoutsUI.SetActive(false);
+
+        userLayoutList = new List<int[,]>();
 
         //Set default grid width and height
-        widthInput = "5";
-        heightInput = "5";
+        //widthInput = "5";
+        //heightInput = "5";
     }
 
     // Update is called once per frame
@@ -63,6 +65,14 @@ public class MenuScript : MonoBehaviour
 
     }
 
+    public void OnViewLayoutsButton()
+    {
+
+        menuUI.SetActive(false);
+        viewLayoutsUI.SetActive(true);
+
+    }
+
     public void OnQuitButton()
     {
         Application.Quit();
@@ -71,7 +81,9 @@ public class MenuScript : MonoBehaviour
     //GENERATE VIEW
     public void OnBackButton()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+        menuUI.SetActive(true);
+        generateUI.SetActive(false);
+        viewLayoutsUI.SetActive(false);
     }
 
     public void OnSubmitButton()
@@ -213,12 +225,12 @@ public class MenuScript : MonoBehaviour
         .Replace("\t", "\\t");
 
         string json = $@"
-{{  
-    ""model"": ""gpt-4.1-mini"",
-    ""messages"": [
-        {{""role"": ""user"", ""content"": ""{(escapeUserInput)}""}}
-    ]
-}} ";
+        {{  
+            ""model"": ""gpt-4.1-mini"",
+            ""messages"": [
+                {{""role"": ""user"", ""content"": ""{(escapeUserInput)}""}}
+            ]
+        }} ";
 
         byte[] body = Encoding.UTF8.GetBytes(json);
 
@@ -285,7 +297,3 @@ public class MenuScript : MonoBehaviour
     }
 
 }
-
-//LOGIC:
-//The AI button runs a defined prompt used for making a 2d layout. The values are then passed into each square's input field and runs the already made submit function.
-

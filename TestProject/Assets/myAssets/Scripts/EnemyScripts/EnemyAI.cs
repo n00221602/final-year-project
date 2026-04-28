@@ -21,7 +21,6 @@ public class EnemyAI : MonoBehaviour
 
     float jumpDamage = 0.25f;
 
-    AnimatorStateInfo stateInfo;
     private Vector3 chargingStartPosition;
 
     public enum State

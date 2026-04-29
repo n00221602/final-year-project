@@ -34,11 +34,7 @@
             "m_Id": "2eef40956fca40329e74d7bbed376398"
         }
     ],
-    "m_Keywords": [
-        {
-            "m_Id": "df8b85218a09461082ca3b80cb215af7"
-        }
-    ],
+    "m_Keywords": [],
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
@@ -1316,9 +1312,6 @@
         },
         {
             "m_Id": "2eef40956fca40329e74d7bbed376398"
-        },
-        {
-            "m_Id": "df8b85218a09461082ca3b80cb215af7"
         }
     ]
 }
@@ -6461,34 +6454,6 @@
 }
 
 {
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.ShaderKeyword",
-    "m_ObjectId": "df8b85218a09461082ca3b80cb215af7",
-    "m_Guid": {
-        "m_GuidSerialized": "0cd4ad44-e9b4-4c92-94a6-7fd02c972bc4"
-    },
-    "promotedFromAssetID": "",
-    "promotedFromCategoryName": "",
-    "promotedOrdering": -1,
-    "m_Name": "Boolean",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Boolean",
-    "m_DefaultReferenceName": "_BOOLEAN",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_DismissedVersion": 0,
-    "m_KeywordType": 0,
-    "m_KeywordDefinition": 0,
-    "m_KeywordScope": 0,
-    "m_KeywordStages": 63,
-    "m_Entries": [],
-    "m_Value": 0,
-    "m_IsEditable": true
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "e03cf59a666846eeb9a8567aa354e96d",
@@ -6709,8 +6674,8 @@
     "m_ObjectId": "e7dadbf447f3426a9a8acbb805e802ea",
     "m_Title": "Cel Shading",
     "m_Position": {
-        "x": -483.33331298828127,
-        "y": -702.6666259765625
+        "x": -483.3333740234375,
+        "y": -702.6665649414063
     }
 }
 

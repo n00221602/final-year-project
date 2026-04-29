@@ -18,12 +18,17 @@ public class MenuScript : MonoBehaviour
     public RectTransform gridHolder;
     public TMP_InputField widthInputField;
     public TMP_InputField heightInputField;
+    public TMP_InputField aiKeyInput;
     public GameObject gridPrefab;
+
+    public Transform layoutHolder;
+    public GameObject savedLayoutPrefab;
+    public RawImage layoutRawImage;
 
     public GridLayoutGroup gridLayoutGroup;
 
     [HideInInspector] public int[,] userLayout;
-    [HideInInspector] public List<int[,]> userLayoutList;
+    public static List<int[,]> userLayoutList;
 
     string widthInput;
     string heightInput;
@@ -36,6 +41,9 @@ public class MenuScript : MonoBehaviour
     [HideInInspector] public UnityEvent onUserSubmit;
 
     public RoomGen roomGen;
+    int aiLayoutArrayWidth;
+    int aiLayoutArrayHeight;
+    int[,] aiLayoutArray;
 
     void Start()
     {
@@ -44,11 +52,15 @@ public class MenuScript : MonoBehaviour
         generateUI.SetActive(false);
         viewLayoutsUI.SetActive(false);
 
-        userLayoutList = new List<int[,]>();
+        if (userLayoutList == null)
+        {
+            userLayoutList = new List<int[,]>();
+        }
 
-        //Set default grid width and height
-        //widthInput = "5";
-        //heightInput = "5";
+        if (userLayoutList.Count > 0)
+        {
+            RefreshLayoutView();
+        }
     }
 
     // Update is called once per frame
@@ -78,7 +90,6 @@ public class MenuScript : MonoBehaviour
         Application.Quit();
     }
 
-    //GENERATE VIEW
     public void OnBackButton()
     {
         menuUI.SetActive(true);
@@ -100,9 +111,6 @@ public class MenuScript : MonoBehaviour
             {
                 userLayout[y, x] = int.Parse(gridHolder.GetChild(squareIndex).GetComponentInChildren<TMP_InputField>().text);
                 squareIndex++;
-                Debug.Log("Grid Array Value at [" + y + ", " + x + "]: " + userLayout[y, x]);
-
-                Debug.Log("Child Amount: " + squareIndex);
             }
         }
 
@@ -115,30 +123,78 @@ public class MenuScript : MonoBehaviour
         if (inputField == widthInputField)
         {
             widthInput = inputField.text;
-            //widthInput = 
-            Debug.Log("Width: " + widthInput);
         }
         else if (inputField == heightInputField)
         {
             heightInput = inputField.text;
-            Debug.Log("Height: " + heightInput);
         }
     }
 
     public void SaveLayout()
     {
-        userLayoutList.Add(userLayout);
+        Debug.Log("SAVED");
+        if (userLayout != null)
+        {
+            userLayoutList.Add(userLayout);
+            Texture sourceTexture = layoutRawImage.texture;
+            Texture2D texture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
+            Graphics.CopyTexture(sourceTexture, texture);
 
+            GameObject currentLayout = savedLayoutPrefab;
+            currentLayout.GetComponent<RawImage>().texture = texture;
+
+            Instantiate(currentLayout, layoutHolder);
+        }
     }
 
     public void RemoveLayout()
     {
-        if (userLayoutList.Count > 0)
+        //Find all active/toggled layouts
+        Toggle[] toggles = layoutHolder.GetComponentsInChildren<Toggle>();
+        List<int> removalList = new List<int>();
+
+        foreach (Toggle toggle in toggles)
         {
-            userLayoutList.RemoveAt(userLayoutList.Count - 1);
+            //If toggled, add to removal list
+            if (toggle.isOn)
+            {
+                int index = toggle.transform.GetSiblingIndex();
+                if (index >= 0 && index < userLayoutList.Count)
+                {
+                    removalList.Add(index);
+                }
+            }
+        }
+
+        //Removes from list, starting from the end.
+        for (int i = removalList.Count - 1; i >= 0; i--)
+        {
+            userLayoutList.RemoveAt(removalList[i]);
+        }
+
+        //Destroy all toggled gameobjects
+        foreach (Toggle toggle in toggles)
+        {
+            if (toggle.isOn)
+            {
+                Destroy(toggle.gameObject);
+            }
         }
     }
 
+    public void RefreshLayoutView()
+    {
+        //Repopulate layout view based on userLayoutList
+        foreach (int[,] layout in userLayoutList)
+        {
+            Texture sourceTexture = layoutRawImage.texture;
+            Texture2D texture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
+            Graphics.CopyTexture(sourceTexture, texture);
+            GameObject currentLayout = savedLayoutPrefab;
+            currentLayout.GetComponent<RawImage>().texture = texture;
+            Instantiate(currentLayout, layoutHolder);
+        }
+    }
 
     public void GridHandler()
     {
@@ -173,51 +229,32 @@ public class MenuScript : MonoBehaviour
 
     public void OnAIButton()
     {
-        string userInput = @"Create a new layout that follows the provided legend and criteria: 
-                            ## LEGEND
-                            - 0 = empty space
-                            - 1 = corner
-                            - 2 = wall
-                            - 3 = floor
-                            - 4 = door/entry point
-                            - 5 = exit point
-                            - 6 = inner wall
-                            - 7 = room teleporter (only in end room)
+        string userInput = @"Generate ONLY a C# 2D array in this exact format with no other text:
 
-                            ## EXAMPLE LAYOUT (Do not copy this layout)
-                               {
-                                 { 1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
-                                 { 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},
-                                 { 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},
-                                 { 2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},
-                                 { 2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},
-                                 { 2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},
-                                 { 4,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},
-                                 { 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5},
-                                 { 2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},
-                                 { 2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},
-                                 { 2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},
-                                 { 2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},
-                                 { 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},
-                                 { 2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},
-                                 { 1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1}
-                               }
+                            LEGEND: 0=empty, 1=corner, 2=wall, 3=floor, 4=entry, 5=exit, 6=inner_wall
 
-                            ## CRITERIA      
-                            4 is always in the middle of the far left column. 5 is always in the far right column. Both cannot be placed next to a corner (1) or an inner wall (6).
-                            inner walls can be connected but not diagonally. inner walls placed in a small 2x2 sqaure will create a pillar. anything placed bigger than this will not work.
-                            The room shapes and size can be anything with corners, such as L shaped or + shapes.
-                            Rooms should follow a symmetrical pattern.
+                            RULES:
+                            - Size: 12x12 to 25x25
+                            - Entry(4): middle of column 0, not adjacent to 1 or 6
+                            - Exit(5): middle of last column, not adjacent to 1 or 6
+                            - Empty(0): outside rooms only
+                            - Corners(1): perimeter corners only
+                            - Walls(2): perimeter only
+                            - Floor(3): inside rooms only
+                            - Inner walls(6): 2x2 pillars maximum, not diagonal
+                            - Symmetrical pattern
 
-                            ## Format the response using the C# 2D array format. Do not include any spaces in the array.
-                            ";
+                            Example array format (no spaces):
+                            {{1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},{2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},{2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},{2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},{2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},{2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},{4,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},{2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,5},{2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},{2,3,3,3,3,3,3,6,6,3,3,3,3,3,3,2},{2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},{2,3,6,6,3,3,3,3,3,3,3,3,6,6,3,2},{2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},{2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2},{1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1}}";
         StartCoroutine(SendOpenAIRequest(userInput));
     }
 
     public IEnumerator SendOpenAIRequest(string userInput)
     {
         string url = "https://api.openai.com/v1/chat/completions";
-        string escapeUserInput = userInput
+        string apiKey = aiKeyInput.text;
+
+        string aiKey = userInput
         .Replace("\\", "\\\\")
         .Replace("\"", "\\\"")
         .Replace("\n", "\\n")
@@ -226,9 +263,9 @@ public class MenuScript : MonoBehaviour
 
         string json = $@"
         {{  
-            ""model"": ""gpt-4.1-mini"",
+            ""model"": ""gpt-4o-mini"",
             ""messages"": [
-                {{""role"": ""user"", ""content"": ""{(escapeUserInput)}""}}
+                {{""role"": ""user"", ""content"": ""{(aiKey)}""}}
             ]
         }} ";
 
@@ -237,7 +274,7 @@ public class MenuScript : MonoBehaviour
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Authorization", "Bearer API-KEY");
+        request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
         request.SetRequestHeader("Content-Type", "application/json");
 
         yield return request.SendWebRequest();
@@ -252,6 +289,7 @@ public class MenuScript : MonoBehaviour
         contentJson = contentJson.Replace("\\n", "\n").Replace("\\\"", "\"");
 
         HandleAIRequest(contentJson);
+        Debug.Log(contentJson);
     }
 
     public void HandleAIRequest(string aiResponse)
@@ -263,32 +301,68 @@ public class MenuScript : MonoBehaviour
             // Remove all whitespace (newlines, tabs, spaces)
             string cleaned = System.Text.RegularExpressions.Regex.Replace(aiResponse, @"\s+", "");
 
-            // Remove outer braces
-            cleaned = cleaned.Trim('{', '}');
+            // Find outer braces
+            int firstBrace = cleaned.IndexOf('{');
+            int lastBrace = cleaned.LastIndexOf('}');
+
+            if (firstBrace == -1 || lastBrace == -1 || firstBrace >= lastBrace)
+            {
+                Debug.LogError("Invalid array format");
+                return;
+            }
+
+            // Extract content between outer braces, excluding the braces themselves
+            string arrayContent = cleaned.Substring(firstBrace + 1, lastBrace - firstBrace - 1);
+
+            // Remove leading { from first row and trailing } from last row
+            arrayContent = arrayContent.TrimStart('{').TrimEnd('}');
 
             // Split by inner array closing and opening: },{
-            string[] rowStrings = cleaned.Split(new string[] { "},{" }, System.StringSplitOptions.None);
+            string[] rowStrings = arrayContent.Split(new string[] { "},{" }, System.StringSplitOptions.None);
 
-            int height = rowStrings.Length;
-            int width = rowStrings[0].Split(',').Length;
+            aiLayoutArrayHeight = rowStrings.Length;
+            aiLayoutArrayWidth = rowStrings[0].Split(',').Length;
 
-            int[,] layoutArray = new int[height, width];
+            aiLayoutArray = new int[aiLayoutArrayHeight, aiLayoutArrayWidth];
 
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < aiLayoutArrayHeight; y++)
             {
                 string[] values = rowStrings[y].Split(',');
 
-                for (int x = 0; x < width && x < values.Length; x++)
+                for (int x = 0; x < aiLayoutArrayWidth && x < values.Length; x++)
                 {
                     if (int.TryParse(values[x], out int parsedValue))
                     {
-                        layoutArray[y, x] = parsedValue;
+                        aiLayoutArray[y, x] = parsedValue;
                     }
                 }
             }
 
-            Debug.Log("Layout parsed successfully: " + height + " x " + width);
-            roomGen.CreateRoomPreview(layoutArray);
+            Debug.Log("Layout parsed successfully: " + aiLayoutArrayHeight + " x " + aiLayoutArrayWidth);
+
+            // Set width and height inputs to match AI layout
+            widthInput = aiLayoutArrayWidth.ToString();
+            heightInput = aiLayoutArrayHeight.ToString();
+
+            // Populate the grid UI
+            totalSquaresWidth = aiLayoutArrayWidth;
+            totalSquaresHeight = aiLayoutArrayHeight;
+            GridHandler();
+
+            // Update grid input fields with AI layout values
+            int squareIndex = 0;
+            for (int y = 0; y < aiLayoutArrayHeight; y++)
+            {
+                for (int x = 0; x < aiLayoutArrayWidth; x++)
+                {
+                    TMP_InputField inputField = gridHolder.GetChild(squareIndex).GetComponentInChildren<TMP_InputField>();
+                    inputField.text = aiLayoutArray[y, x].ToString();
+                    squareIndex++;
+                }
+            }
+
+            // Call OnSubmitButton to process and save the layout
+            OnSubmitButton();
         }
         catch (System.Exception ex)
         {

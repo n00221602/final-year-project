@@ -33,6 +33,7 @@ public class RoomGen : MonoBehaviour
 
     //LISTS + ARRAYS
     [HideInInspector] public List<int[,]> layoutList;
+    [HideInInspector] public List<int[,]> userList;
     [HideInInspector] public int[] rowsArray;
     [HideInInspector] public int[] colsArray;
 
@@ -57,6 +58,16 @@ public class RoomGen : MonoBehaviour
 
     void Start()
     {
+        if (userList == null)
+        {
+            userList = new List<int[,]>();
+        }
+
+        if (MenuScript.userLayoutList != null)
+        {
+            userList = MenuScript.userLayoutList;
+        }
+
         SetRoomLayouts();
         InitializeTileHandlers();
 
@@ -88,6 +99,28 @@ public class RoomGen : MonoBehaviour
         //Choose 5 random layouts from the LayoutGen list.
 
         layoutList = new List<int[,]>();
+
+        //Add any user-made layouts to the pool.
+        if (userList == null)
+        {
+            Debug.LogWarning("list is null");
+        }
+
+        if (userList != null && userList.Count > 0)
+        {
+            Debug.Log("Found " + userList.Count + " user layouts");
+            for (int i = 0; i < userList.Count; i++)
+            {
+                Debug.Log("Adding user layout at index: " + i);
+                layoutGen.allLayoutsList.Add(userList[i]);
+            }
+        }
+        else
+        {
+            Debug.Log("No user layouts found");
+        }
+
+        //Choose 4 random rooms for each floor.
         for (int i = 0; i < 4; i++)
         {
             int randomIndex = Random.Range(0, layoutGen.allLayoutsList.Count);
@@ -95,14 +128,7 @@ public class RoomGen : MonoBehaviour
             layoutList.Add(layoutGen.allLayoutsList[randomIndex]);
         }
 
-        //Have another loop for adding user-made layouts.
-        if (menuScript != null && menuScript.userLayoutList != null && menuScript.userLayoutList.Count != 0)
-        {
-            for (int i = 0; i < menuScript.userLayoutList.Count; i++)
-            {
-                layoutList.Add(menuScript.userLayoutList[i]);
-            }
-        }
+
 
         //Inject start and end room layouts into the first and last index of the layoutList.
         layoutList.Insert(0, layoutGen.layoutStart);

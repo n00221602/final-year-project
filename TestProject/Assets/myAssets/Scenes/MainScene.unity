@@ -8236,9 +8236,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 802390908}
-        m_TargetAssemblyTypeName: ScreenUI, Assembly-CSharp
-        m_MethodName: PlayerQuit
+      - m_Target: {fileID: 1905718324}
+        m_TargetAssemblyTypeName: PlayerOptions, Assembly-CSharp
+        m_MethodName: ResetToDefault
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9485,7 +9485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1354699307
 Transform:
   m_ObjectHideFlags: 0
@@ -9540,11 +9540,11 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 0.51257855, b: 0.51257855, a: 0}
   m_Intensity: 100
   m_Range: 10
-  m_SpotAngle: 35
-  m_InnerSpotAngle: 35
+  m_SpotAngle: 26
+  m_InnerSpotAngle: 16
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
     m_Type: 0
@@ -13291,7 +13291,11 @@ MonoBehaviour:
   gridHolder: {fileID: 0}
   widthInputField: {fileID: 0}
   heightInputField: {fileID: 0}
+  aiKeyInput: {fileID: 0}
   gridPrefab: {fileID: 0}
+  layoutHolder: {fileID: 0}
+  savedLayoutPrefab: {fileID: 0}
+  layoutRawImage: {fileID: 0}
   gridLayoutGroup: {fileID: 0}
   onUserSubmit:
     m_PersistentCalls:

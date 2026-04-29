@@ -161,6 +161,31 @@ public class PlayerOptions : MonoBehaviour
         Shader.SetGlobalInt("_CelShadowToggle", 0);
     }
 
+    public void ResetToDefault()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+        //Reset all settings to default values
+        outlineEnabled = true;
+        celShaderEnabled = true;
+        greyscaleEnabled = false;
+        noirEnabled = false;
+        roomMaskEnabled = true;
+        SetFeatureActive("EdgeDetection", outlineEnabled);
+        SetFeatureActive("CelShader", celShaderEnabled);
+        SetFeatureActive("Greyscale", greyscaleEnabled);
+        SetFeatureActive("NoirMask", noirEnabled);
+        SetFeatureActive("RoomMask", roomMaskEnabled);
+        celShaderOptionsUI.SetActive(celShaderEnabled);
+        celShaderOnlyToggle.isOn = false;
+        hatchToggle.isOn = false;
+        halftoneToggle.isOn = false;
+        Shader.SetGlobalInt("_CelShaderToggle", 0);
+        Shader.SetGlobalInt("_CelShadowToggle", 0);
+        playerNoirLight.SetActive(false);
+
+
+    }
+
     private void SetFeatureActive(string featureName, bool isActive)
     {
         if (rendererData == null)

@@ -22,6 +22,7 @@ public class RoomEnter : MonoBehaviour
     List<Vector3> usedSpawnPointList;
     public int enemyCount;
     int randomIndex;
+    bool jumperSpawned = false;
 
     bool isTriggered = false;
     [HideInInspector] public bool spawnEnemies = false;
@@ -29,6 +30,7 @@ public class RoomEnter : MonoBehaviour
     Vector3 spawnPoint;
     Vector3 activeTrigger;
     [HideInInspector] public List<int> usedRoomIndices;
+
     void Awake()
     {
         roomGen.OnRoomGenComplete.AddListener(FindDoors);
@@ -174,15 +176,19 @@ public class RoomEnter : MonoBehaviour
             //Make ranged enemies more common.
             float value = Random.value;
 
-            if (value > 0.33f)
+
+
+            if (value > 0.66f && !jumperSpawned)
             {
-                enemy = enemyArray[0]; // Laser enemy
+                enemy = enemyArray[1]; // Jumper enemy
+                jumperSpawned = true;
             }
             else
             {
-                enemy = enemyArray[1]; // Jumper enemy
+                enemy = enemyArray[0]; // Laser enemy
             }
             enemy = enemyArray[Random.Range(0, enemyArray.Length)];
+
 
             spawnPoint = spawnPointList[randomIndex];
 
@@ -199,6 +205,7 @@ public class RoomEnter : MonoBehaviour
     {
         activeRoom = null;
         activeRoomParent = null;
+        jumperSpawned = false;
 
         if (doors != null && doors.Length > 0)
         {

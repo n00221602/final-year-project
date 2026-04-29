@@ -110,61 +110,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    //This state checks if the player is within its close range only it's in the enemy view.
-    //void EnemyCloseRange()
-    //{
-    //    animator.SetBool("isCloseRange", true);
-    //    agent.isStopped = false;
-    //    agent.transform.LookAt(player.transform);
-    //    agent.SetDestination(player.transform.position);
-    //    Debug.Log("CLOSE RANGE");
-
-    //    if (playerDistance < attackDistance)
-    //    {
-    //        animator.SetBool("isCloseRange", false);
-    //        currentState = State.Attacking;
-    //    }
-
-    //    if (playerDistance > closeRangeDistance && playerDistance < aimingDistance)
-    //    {
-    //        animator.SetBool("isCloseRange", false);
-    //        currentState = State.Aiming;
-    //    }
-    //}
-
-    void EnemyAttack()
-    {
-        animator.SetBool("isAttacking", true);
-
-        agent.isStopped = true;
-        agent.ResetPath();
-        Debug.Log("ATTACKING");
-
-        //In this state, the enemy should run its attack animation and then a cooldown once animation is complete. once cooldown is up,
-        //change state depending on distance. Attack again if player still within range.
-
-
-        //3 if statements: for idle, close and long range.
-
-        //if (playerDistance < closeRangeDistance && playerDistance > attackDistance)
-        //{
-        //    animator.SetBool("isAttacking", false);
-        //    currentState = State.CloseRange;
-        //}
-
-        if (playerDistance < aimingDistance)
-        {
-            animator.SetBool("isAttacking", false);
-            currentState = State.Aiming;
-        }
-
-        //if (playerDistance > aimingDistance)
-        //{
-        //    currentState = State.Idle;
-        //}
-
-    }
-
     //This state checks if the player is within its long range only it's in the enemy view.
     void EnemyAiming()
     {

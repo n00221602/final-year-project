@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UndefinedMaskMat
+  m_Name: NoirMaskMat
   m_Shader: {fileID: -6465566751694194690, guid: 5f8b43aa197c66d47ac5928ced1fee10, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -44,12 +44,12 @@ Material:
     - _HatchFrequency: 30
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Step: 0.75
+    - _Step: 0.51
     - _step: 0
     m_Colors:
     - _MainLightColor: {r: 0.24, g: 0.5, b: 0, a: 0}
-    - _SceneTint: {r: 1, g: 1, b: 1, a: 1}
-    - _SceneTint_1: {r: 1, g: 1, b: 1, a: 1}
+    - _SceneTint: {r: 0.050314426, g: 0.050314426, b: 0.050314426, a: 1}
+    - _SceneTint_1: {r: 0.7798742, g: 0.6744195, b: 0.6744195, a: 1}
     - _SceneTint_2: {r: 0.9622642, g: 0.9622642, b: 0.9622642, a: 1}
     - _Vector3: {r: 0.68, g: 0.62, b: 0.58, a: 0}
   m_BuildTextureStacks: []

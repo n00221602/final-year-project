@@ -67,20 +67,6 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    //HITBOX CHECKS//
-    //private void OnTriggerEnter(Collider collider)
-    //{
-    //    if (collider.gameObject.CompareTag("Enemy"))
-    //    {
-    //        Debug.Log("HIT ENEMY");
-    //    }
-    //}
-
-
-    //Received from HitboxReporter when the hitbox detects a collision with an enemy.
-
-
-
     //ATTACKS//
     void PrimaryAttack()
     {
@@ -90,12 +76,6 @@ public class CombatSystem : MonoBehaviour
 
         if (closestEnemyDistance < 5f && closestEnemy != null)
         {
-            //Vector3 lookPosition = closestEnemy.transform.position;
-            //lookPosition.y = player.transform.position.y;
-            //player.transform.LookAt(lookPosition);
-            //player.transform.position = Vector3.MoveTowards(player.transform.position, closestEnemy.transform.position, 10f * Time.deltaTime);
-            //playerMovement.rb.AddForce(closestEnemy.transform.position * playerMovement.moveSpeed * 10f, ForceMode.Force);
-            //isPrimaryAttacking = true;
             StartCoroutine(LockOn(closestEnemy.transform.position, true));
 
         }
@@ -108,29 +88,27 @@ public class CombatSystem : MonoBehaviour
     {
         if (isAttacking) return;
         isAttacking = true;
-        //playerMovement.enabled = false;
 
         if (closestEnemy != null)
         {
             StartCoroutine(LockOn(closestEnemy.transform.position, false));
         }
 
-        //if (
-
         animator.SetTrigger("AttackS");
     }
 
 
     //COMBAT LOGIC//
+
     void FindClosestEnemy()
     {
+        //Get all enemies in the scene
         enemyCount = GameObject.FindGameObjectsWithTag("Enemy");
 
-        //Debug.Log("Enemy count: " + enemyCount.Length);
         closestEnemyDistance = Mathf.Infinity;
         closestEnemy = null;
 
-        //Check distance for each enemy
+        //Check distance for each enemy until the smallest distance is found.
         foreach (GameObject enemy in enemyCount)
         {
             enemyDif = Vector3.Distance(player.position, enemy.transform.position);
@@ -139,19 +117,21 @@ public class CombatSystem : MonoBehaviour
             {
                 closestEnemyDistance = enemyDif;
                 closestEnemy = enemy;
-                //Debug.Log("Closest Enemy Distance: " + closestEnemyDistance);
             }
         }
     }
 
     private IEnumerator LockOn(Vector3 enemyPosition, bool isPrimaryAttack)
     {
+        //Establish the duration of the lock-on and the timer.
         float lockOnTime = 0.15f;
         float elapsedTime = 0f;
 
+        //Calculate the direction from the player to the enemy. Reset Y to 0 to ensure the player doesn't rotate vertically.
         Vector3 direction = (enemyPosition - player.position).normalized;
         direction.y = 0f;
 
+        //The set destination is slightly in front of the enemy to prevent the player from moving inside the enemy's hitbox.
         Vector3 startPos = playerMovement.rb.position;
         Vector3 destination = enemyPosition - (direction * 0.5f);
 
@@ -159,7 +139,7 @@ public class CombatSystem : MonoBehaviour
         {
             player.rotation = Quaternion.LookRotation(direction);
 
-            //Move towards enemy if primary attack
+            //Move towards enemy if primary attack bool is activated
             if (isPrimaryAttack)
             {
                 Vector3 nextPos = Vector3.Lerp(startPos, destination, elapsedTime / lockOnTime);
@@ -169,9 +149,6 @@ public class CombatSystem : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        //player.forward = direction;
-        //playerMovement.rb.MovePosition(destination);
     }
 
     //ANIMATION EVENT FUNCTIONS//
@@ -191,6 +168,7 @@ public class CombatSystem : MonoBehaviour
         hitboxReporter.hit = false;
     }
 
+
     public void OnHitboxHit(GameObject hitEnemy)
     {
         Debug.Log("Hitbox struck: " + hitEnemy.name);
@@ -198,20 +176,5 @@ public class CombatSystem : MonoBehaviour
         //Get enemy's health system and apply damage
         hitboxReporter.hit = true;
         hitEnemy.GetComponent<HealthSystem>().TakeDamage(playerDamage);
-    }
-
-    void SecondaryShoot()
-    {
-
-    }
-
-    void SecondaryHitboxOn()
-    {
-        Debug.Log("BANG");
-    }
-
-    void SecondaryHitboxOff()
-    {
-        isAttacking = false;
     }
 }

@@ -91,7 +91,7 @@ public class RoomEnter : MonoBehaviour
         }
 
         //Equaled to 2 for now, since 2 existing test enemies are in the scene.
-        if (spawnEnemies && GameObject.FindGameObjectsWithTag("Enemy").Length == 2)
+        if (spawnEnemies && GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
         {
             spawnEnemies = false;
             RoomCleared();
@@ -117,7 +117,7 @@ public class RoomEnter : MonoBehaviour
                 //Checks if the indexs of the current output position are within the current layout's bounds.
                 if (yIndex >= 0 && yIndex < roomGen.layoutList[i].GetLength(0) && xIndex >= 0 && xIndex < roomGen.layoutList[i].GetLength(1))
                 {
-                    //If the current layout index matches the output position, then the active room has been found. This layout and its parent is set to the active room.
+                    //If the current layout index matches the trigger's position, then the active room has been found.
                     if (roomGen.layoutList[i][yIndex, xIndex] == 5 && floorCreator.outputPosArray[j] == activeTrigger)
                     {
                         activeRoom = roomGen.layoutList[i];
@@ -145,7 +145,6 @@ public class RoomEnter : MonoBehaviour
 
         if (teleporterPosition.Count > 0)
         {
-            Debug.Log("TELEPORTER FOUND, NO ENEMIES SPAWNED");
             return;
         }
         else
@@ -166,29 +165,21 @@ public class RoomEnter : MonoBehaviour
             spawnPointList.Add(worldSpawnPoint);
         }
 
-        //Debug.Log("SPAWN POINT LENGTH:" + spawnPointList.Count);
-
         //Pick a random position from the list and spawn enemies there.
         for (int i = 0; i < enemyCount; i++)
         {
-            //Debug.Log("CURRENT ITERATION: " + i);
             randomIndex = Random.Range(0, spawnPointList.Count);
-            //Make ranged enemies more common.
             float value = Random.value;
-
-
 
             if (value > 0.66f && !jumperSpawned)
             {
-                enemy = enemyArray[1]; // Jumper enemy
+                enemy = enemyArray[1];
                 jumperSpawned = true;
             }
             else
             {
-                enemy = enemyArray[0]; // Laser enemy
+                enemy = enemyArray[0];
             }
-            enemy = enemyArray[Random.Range(0, enemyArray.Length)];
-
 
             spawnPoint = spawnPointList[randomIndex];
 
@@ -198,6 +189,7 @@ public class RoomEnter : MonoBehaviour
 
             Instantiate(enemy, spawnPoint, Quaternion.identity, activeRoomParent.transform);
         }
+
     }
 
 
@@ -211,7 +203,7 @@ public class RoomEnter : MonoBehaviour
         {
             foreach (GameObject door in doors)
             {
-                if (door != null)  // Check if door still exists
+                if (door != null)
                 {
                     door.transform.position = new Vector3(door.transform.position.x, -3f, door.transform.position.z);
                 }

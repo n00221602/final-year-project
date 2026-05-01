@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
@@ -12,34 +11,27 @@ public class HealthSystem : MonoBehaviour
 
     public PlayerMovement playerMovement;
     public ThirdPersonCam thirdPersonCam;
+    public CombatSystem combatSystem;
     public ScreenUI screenUI;
     public GameObject playerDeathLight;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Assign all health bars to full.
         health.fillAmount = 1f;
-
-        if (rendererData != null)
-        {
-            var playerMaskFeature = rendererData.rendererFeatures.Find(f => f.name == "PlayerDeathMask");
-            if (playerMaskFeature != null)
-            {
-                playerDeathLight.SetActive(false);
-                playerMaskFeature.SetActive(false);
-
-            }
-        }
     }
 
     void Update()
     {
+        //Call the death function if the health bar is empty.
         if (health.fillAmount == 0f)
         {
             OnDeath();
         }
     }
 
+    //Used by external scripts for inflicting health damage.
     public void TakeDamage(float damage)
     {
         health.fillAmount -= damage;
@@ -47,21 +39,19 @@ public class HealthSystem : MonoBehaviour
 
     public void OnDeath()
     {
-
-        //TO-DO: Add death animation, sound effects, and respawn mechanics.
         if (gameObject.CompareTag("Enemy"))
         {
-            Debug.Log(gameObject.name + " DEAD");
+            //Destroys the enemy object from the scene.
             Destroy(gameObject.transform.parent.gameObject);
         }
 
         if (gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player DEAD");
-
-            //Disable player movement script and stop existing momentum.
+            //Disable player scripts and stop existing momentum.
             thirdPersonCam.enabled = false;
             playerMovement.enabled = false;
+            combatSystem.enabled = false;
+
             Rigidbody rb = playerMovement.GetComponent<Rigidbody>();
             if (rb != null)
             {
@@ -69,7 +59,7 @@ public class HealthSystem : MonoBehaviour
                 rb.angularVelocity = Vector3.zero;
             }
 
-            //Death animation and renderer feature are triggered
+            //Death animation and renderer feature are triggered.
             playerAnimator.SetTrigger("PlayerDeath");
             if (rendererData != null)
             {
@@ -84,12 +74,5 @@ public class HealthSystem : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void PlayerGracePeriod(NavMeshAgent enemy)
-    {
-        //The player is invulnerable for a short period of time once hit, but only by the enemy that hit them.
-        Debug.Log("GRACE PERIOD");
-
     }
 }

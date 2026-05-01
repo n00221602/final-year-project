@@ -87,11 +87,9 @@ public class PlayerMovement : MonoBehaviour
         if (dashCooldownTimer > 0)
         {
             dashCooldownTimer -= Time.deltaTime;
-            //Debug.Log("DASH COOLDOWN: " + dashCooldownTimer);
             if (dashCooldownTimer <= 0)
             {
                 dashCooldownTimer = 0;
-                //Debug.Log("DASH READY");
             }
         }
 
@@ -104,18 +102,12 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
-
-        //if (horizontalInput == 0 && verticalInput == 0)
-        //{
-        //    rb.linearVelocity = new Vector3(0f, 0, 0f);
-        //}
     }
 
     private void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        //Debug.Log(horizontalInput + "<H>V" + verticalInput);
     }
 
     private void MovePlayer()
@@ -125,10 +117,10 @@ public class PlayerMovement : MonoBehaviour
 
         //Snap rotation instantly to face the movement direction
 
-        //if (moveDirection != Vector3.zero)
-        //{
-        //    transform.rotation = Quaternion.LookRotation(moveDirection);
-        //}
+        if (moveDirection != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+        }
     }
 
 
@@ -149,12 +141,9 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isDashing", true);
 
         moveSpeed = dashSpeed;
-        //Vector3 dashVelocity = moveDirection.normalized * dashSpeed;
-        //rb.linearVelocity = new Vector3(dashVelocity.x, rb.linearVelocity.y, dashVelocity.z);
 
         //ResetDash is called after dashDuration is over.
         Invoke(nameof(ResetDash), dashDuration);
-
     }
 
     private void ResetDash()
@@ -165,16 +154,4 @@ public class PlayerMovement : MonoBehaviour
 
         dashCooldownTimer = 0.4f;
     }
-
-    //private void ResetDashCooldown()
-    //{
-    //    dashCooldownTimer = 3f;
-    //    dashCooldownTimer -= Time.deltaTime;
-    //    Debug.Log("DASH COOLDOWN: " + dashCooldownTimer);
-    //    if (dashCooldownTimer <= 0)
-    //    {
-    //        dashCooldownTimer = 0;
-    //        Debug.Log("DASH READY");
-    //    }
-    //}
 }

@@ -23,6 +23,9 @@ public class PlayerOptions : MonoBehaviour
     private bool isOptionsOpen = false;
     private float previousTimeScale = 1f;
 
+    public CombatSystem combatSystem;
+    public PlayerMovement playerMovement;
+
     private void Start()
     {
         optionsMenuUI.SetActive(false);
@@ -62,6 +65,8 @@ public class PlayerOptions : MonoBehaviour
             Cursor.visible = true;
             optionsMenuUI.SetActive(true);
             isOptionsOpen = false;
+            combatSystem.enabled = false;
+            playerMovement.enabled = false;
         }
         else
         {
@@ -70,6 +75,8 @@ public class PlayerOptions : MonoBehaviour
             Cursor.visible = false;
             optionsMenuUI.SetActive(false);
             isOptionsOpen = true;
+            combatSystem.enabled = true;
+            playerMovement.enabled = true;
         }
     }
 
@@ -163,7 +170,7 @@ public class PlayerOptions : MonoBehaviour
 
     public void ResetToDefault()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+
         //Reset all settings to default values
         outlineEnabled = true;
         celShaderEnabled = true;
@@ -175,6 +182,7 @@ public class PlayerOptions : MonoBehaviour
         SetFeatureActive("Greyscale", greyscaleEnabled);
         SetFeatureActive("NoirMask", noirEnabled);
         SetFeatureActive("RoomMask", roomMaskEnabled);
+        SetFeatureActive("PlayerDeathMask", false);
         celShaderOptionsUI.SetActive(celShaderEnabled);
         celShaderOnlyToggle.isOn = false;
         hatchToggle.isOn = false;
@@ -183,7 +191,8 @@ public class PlayerOptions : MonoBehaviour
         Shader.SetGlobalInt("_CelShadowToggle", 0);
         playerNoirLight.SetActive(false);
 
-
+        //Move to the menu scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
     }
 
     private void SetFeatureActive(string featureName, bool isActive)

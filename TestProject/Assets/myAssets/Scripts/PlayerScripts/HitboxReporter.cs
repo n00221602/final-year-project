@@ -16,7 +16,7 @@ public class HitboxReporter : MonoBehaviour
             combatSystem.OnHitboxHit(other.gameObject);
         }
 
-
+        // If the hitbox comes in contact with the player, run the OnPlayerHit function from EnemyAI.  
         if (other.CompareTag("Player") && hit != true)
         {
             Debug.Log("Player hit by enemy!");

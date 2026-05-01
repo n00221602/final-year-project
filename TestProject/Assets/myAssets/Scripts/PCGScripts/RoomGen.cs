@@ -221,11 +221,10 @@ public class RoomGen : MonoBehaviour
         left = (x > 0) && (layout[y, x - 1] == FLOOR);
         right = (x < cols - 1) && (layout[y, x + 1] == FLOOR);
 
-        //Use innerCorner if adjacent to floors, otherwise regular corner
+        //Instantiate the innerCorner if it is adjacent to floors, otherwise use the outer corner
         GameObject prefab = (top || bottom || left || right) ? innerCorner : corner;
         Instantiate(prefab, position, rotation, roomParent[layoutIdx].transform);
     }
-
     private Quaternion GetCornerRotation(bool top, bool bottom, bool left, bool right)
     {
         if (bottom && right) return Quaternion.Euler(0, 90, 0);
@@ -377,6 +376,7 @@ public class RoomGen : MonoBehaviour
         return positions.Count > 0 ? positions[0] : null;
     }
 
+    //This function is called at the end of RoomGeneration() after all prefabs have been instantiated.
     void CombineRoomMeshes(GameObject roomParent)
     {
         // Get all MeshFilters from the prefabs in the current roomParent.
@@ -384,6 +384,7 @@ public class RoomGen : MonoBehaviour
 
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
+        //Loop through each MeshFilter and combine them into a single mesh.
         for (int i = 0; i < meshFilters.Length; i++)
         {
             Mesh mesh = meshFilters[i].sharedMesh;
@@ -391,16 +392,16 @@ public class RoomGen : MonoBehaviour
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
         }
 
-        // Create combined mesh
+        //Creates an empty mesh that will store the combined meshes.
         Mesh combinedMesh = new();
 
-        //Increase vertices limit
+        //Increase vertices limit to support larger rooms. Mesh values are also recalculated to prevent confliction issues.
         combinedMesh.indexFormat = IndexFormat.UInt32;
         combinedMesh.CombineMeshes(combine, true, true);
         combinedMesh.RecalculateNormals();
         combinedMesh.RecalculateBounds();
 
-        // Add MeshCollider to the roomParent
+        //Add an empty MeshCollider to the roomParent and assign the combined mesh to it.
         MeshCollider meshCollider = roomParent.AddComponent<MeshCollider>();
         meshCollider.sharedMesh = combinedMesh;
         meshCollider.convex = false;

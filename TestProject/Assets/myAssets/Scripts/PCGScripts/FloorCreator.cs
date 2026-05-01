@@ -18,7 +18,7 @@ public class FloorCreator : MonoBehaviour
 
     void CreateFloorLayout()
     {
-        // Initialize the array with the correct size
+        //Initialize the array with the correct size.
         outputPosArray = new Vector3[roomGen.roomParent.Length];
 
         for (int i = 0; i < roomGen.roomParent.Length - 1; i++)
@@ -32,12 +32,14 @@ public class FloorCreator : MonoBehaviour
             if (!doorPos.HasValue)
                 continue;
 
+            //Store the door's world space position.
             entryPosition = new Vector3(doorPos.Value.x, 0, -doorPos.Value.y);
 
             Vector2Int? outputPos = roomGen.FindTilePosition(i + 1, 5);
             if (!outputPos.HasValue)
                 continue;
 
+            //Store the exit's world space position.
             exitPosition = new Vector3(outputPos.Value.x, 0, -outputPos.Value.y);
             outputPosArray[i] = exitPosition;
 
@@ -46,7 +48,7 @@ public class FloorCreator : MonoBehaviour
 
             if (positionDifference != Vector3.zero)
             {
-                //Move the next room by the position difference AND the current room's position.
+                //Move the next room by the position difference and the current room's position.
                 roomGen.roomParent[i + 1].transform.position = positionDifference + roomGen.roomParent[i].transform.position;
             }
         }

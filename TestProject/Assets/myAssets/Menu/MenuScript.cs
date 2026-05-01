@@ -20,6 +20,7 @@ public class MenuScript : MonoBehaviour
     public TMP_InputField heightInputField;
     public TMP_InputField aiKeyInput;
     public GameObject gridPrefab;
+    public GameObject loadingText;
 
     public Transform layoutHolder;
     public GameObject savedLayoutPrefab;
@@ -29,6 +30,7 @@ public class MenuScript : MonoBehaviour
 
     [HideInInspector] public int[,] userLayout;
     public static List<int[,]> userLayoutList;
+    public static List<Texture2D> layoutTextureList;
 
     string widthInput;
     string heightInput;
@@ -55,6 +57,11 @@ public class MenuScript : MonoBehaviour
         if (userLayoutList == null)
         {
             userLayoutList = new List<int[,]>();
+        }
+
+        if (layoutTextureList == null)
+        {
+            layoutTextureList = new List<Texture2D>();
         }
 
         if (userLayoutList.Count > 0)
@@ -132,13 +139,14 @@ public class MenuScript : MonoBehaviour
 
     public void SaveLayout()
     {
-        Debug.Log("SAVED");
         if (userLayout != null)
         {
             userLayoutList.Add(userLayout);
             Texture sourceTexture = layoutRawImage.texture;
             Texture2D texture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
             Graphics.CopyTexture(sourceTexture, texture);
+
+            layoutTextureList.Add(texture);
 
             GameObject currentLayout = savedLayoutPrefab;
             currentLayout.GetComponent<RawImage>().texture = texture;
@@ -170,6 +178,7 @@ public class MenuScript : MonoBehaviour
         for (int i = removalList.Count - 1; i >= 0; i--)
         {
             userLayoutList.RemoveAt(removalList[i]);
+            layoutTextureList.RemoveAt(removalList[i]);
         }
 
         //Destroy all toggled gameobjects
@@ -185,11 +194,9 @@ public class MenuScript : MonoBehaviour
     public void RefreshLayoutView()
     {
         //Repopulate layout view based on userLayoutList
-        foreach (int[,] layout in userLayoutList)
+        for (int i = 0; i < userLayoutList.Count; i++)
         {
-            Texture sourceTexture = layoutRawImage.texture;
-            Texture2D texture = new Texture2D(sourceTexture.width, sourceTexture.height, TextureFormat.RGBA32, false);
-            Graphics.CopyTexture(sourceTexture, texture);
+            Texture2D texture = layoutTextureList[i];
             GameObject currentLayout = savedLayoutPrefab;
             currentLayout.GetComponent<RawImage>().texture = texture;
             Instantiate(currentLayout, layoutHolder);
@@ -222,13 +229,14 @@ public class MenuScript : MonoBehaviour
             }
         }
 
-
-        Debug.Log(gridHolderWidth);
+        //Adjust the cell sizes depending on the total number of squares in the grid.
         gridLayoutGroup.cellSize = new Vector2(gridHolderWidth / totalSquaresWidth, gridHolderHeight / totalSquaresHeight);
+
     }
 
     public void OnAIButton()
     {
+        loadingText.SetActive(true);
         string userInput = @"Generate ONLY a C# 2D array in this exact format with no other text:
 
                             LEGEND: 0=empty, 1=corner, 2=wall, 3=floor, 4=entry, 5=exit, 6=inner_wall
@@ -254,23 +262,26 @@ public class MenuScript : MonoBehaviour
         string url = "https://api.openai.com/v1/chat/completions";
         string apiKey = aiKeyInput.text;
 
-        string aiKey = userInput
+        //User input is tweaked to remove special characters in order to be compatible with JSON.
+        string formattedUserInput = userInput
         .Replace("\\", "\\\\")
         .Replace("\"", "\\\"")
         .Replace("\n", "\\n")
         .Replace("\r", "\\r")
         .Replace("\t", "\\t");
 
+        //User input is formatted into a valid JSON input.
         string json = $@"
         {{  
             ""model"": ""gpt-4o-mini"",
             ""messages"": [
-                {{""role"": ""user"", ""content"": ""{(aiKey)}""}}
+                {{""role"": ""user"", ""content"": ""{(formattedUserInput)}""}}
             ]
         }} ";
 
         byte[] body = Encoding.UTF8.GetBytes(json);
 
+        //Web request is created and sent to the AI model.
         UnityWebRequest request = new UnityWebRequest(url, "POST");
         request.uploadHandler = new UploadHandlerRaw(body);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -281,7 +292,7 @@ public class MenuScript : MonoBehaviour
 
         string responseText = request.downloadHandler.text;
 
-        // Extract the content from the response
+        //Outputted response is parsed to extract the content field which contains the layout.
         int contentStart = responseText.IndexOf("\"content\": \"") + 12;
         int contentEnd = responseText.IndexOf("\",\n        \"refusal\"");
 
@@ -289,19 +300,16 @@ public class MenuScript : MonoBehaviour
         contentJson = contentJson.Replace("\\n", "\n").Replace("\\\"", "\"");
 
         HandleAIRequest(contentJson);
-        Debug.Log(contentJson);
     }
 
     public void HandleAIRequest(string aiResponse)
     {
-        Debug.Log(aiResponse);
-
         try
         {
-            // Remove all whitespace (newlines, tabs, spaces)
+            //Remove any potential spacing from the AI response.
             string cleaned = System.Text.RegularExpressions.Regex.Replace(aiResponse, @"\s+", "");
 
-            // Find outer braces
+            //Find the outer most brances that are containing the 2D array.
             int firstBrace = cleaned.IndexOf('{');
             int lastBrace = cleaned.LastIndexOf('}');
 
@@ -311,13 +319,13 @@ public class MenuScript : MonoBehaviour
                 return;
             }
 
-            // Extract content between outer braces, excluding the braces themselves
+            //Clean string for extracting the 2D array between the outer braces.
             string arrayContent = cleaned.Substring(firstBrace + 1, lastBrace - firstBrace - 1);
 
-            // Remove leading { from first row and trailing } from last row
+            //Trim braces so only the 2D array content remains.
             arrayContent = arrayContent.TrimStart('{').TrimEnd('}');
 
-            // Split by inner array closing and opening: },{
+            //Split the content into individual rows based on the "{}" braces
             string[] rowStrings = arrayContent.Split(new string[] { "},{" }, System.StringSplitOptions.None);
 
             aiLayoutArrayHeight = rowStrings.Length;
@@ -340,16 +348,16 @@ public class MenuScript : MonoBehaviour
 
             Debug.Log("Layout parsed successfully: " + aiLayoutArrayHeight + " x " + aiLayoutArrayWidth);
 
-            // Set width and height inputs to match AI layout
+            //Set the grid width and height to match the AI layout.
             widthInput = aiLayoutArrayWidth.ToString();
             heightInput = aiLayoutArrayHeight.ToString();
 
-            // Populate the grid UI
+            //Assign the grid size to match the created layout.
             totalSquaresWidth = aiLayoutArrayWidth;
             totalSquaresHeight = aiLayoutArrayHeight;
             GridHandler();
 
-            // Update grid input fields with AI layout values
+            //Update grid input fields with AI layout values
             int squareIndex = 0;
             for (int y = 0; y < aiLayoutArrayHeight; y++)
             {
@@ -361,13 +369,15 @@ public class MenuScript : MonoBehaviour
                 }
             }
 
-            // Call OnSubmitButton to process and save the layout
+            //Call OnSubmitButton to process and save the layout
             OnSubmitButton();
         }
         catch (System.Exception ex)
         {
             Debug.LogError("Failed to parse layout: " + ex.Message);
         }
+
+        loadingText.SetActive(false);
     }
 
 }

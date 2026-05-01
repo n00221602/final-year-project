@@ -40,7 +40,7 @@ Material:
     - _Boldness: 0.8
     - _ColourThreshold: 0.2
     - _DepthPower: 1
-    - _DepthRange: -1
+    - _DepthRange: 1
     - _DepthThickness: 12
     - _DepthThreshold: 0.0001
     - _DepthThresholdHigh: 0.0001

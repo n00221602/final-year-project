@@ -8,9 +8,10 @@ public class ScreenUI : MonoBehaviour
     private GameObject[] existingEnemies;
     public GameObject gameOverUI;
 
+    public PlayerOptions playerOptions;
+
     [SerializeField] private UniversalRendererData rendererData;
 
-    //public RoomEnter roomEnter;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,10 +21,6 @@ public class ScreenUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (roomEnter.spawnEnemies)
-        //{
-        //    GetEnemyUI();
-        //}
         GetEnemyUI();
     }
 
@@ -41,10 +38,12 @@ public class ScreenUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        playerOptions.ResetToDefault();
     }
 
     public void PlayerQuit()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+        playerOptions.ResetToDefault();
     }
 }

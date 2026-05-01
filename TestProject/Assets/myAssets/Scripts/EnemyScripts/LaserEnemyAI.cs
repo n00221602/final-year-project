@@ -85,6 +85,7 @@ public class LaserEnemyAI : MonoBehaviour
         playerDirection.y = transform.position.y;
         agent.transform.LookAt(playerDirection);
 
+        //Position the enemy's laser to point towards the player.
         laserLineRenderer.SetPosition(0, laserGun.transform.position);
         laserLineRenderer.SetPosition(1, player.position + new Vector3(0, laserGun.transform.position.y, 0));
         laserLineRenderer.enabled = true;

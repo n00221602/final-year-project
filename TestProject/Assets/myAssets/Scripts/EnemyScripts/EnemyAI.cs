@@ -143,11 +143,12 @@ public class EnemyAI : MonoBehaviour
     {
         animator.SetBool("isCharging", true);
 
+        //Define the charge duration and the coresponding animation speed.
         float chargeDuration = 1.5f;
         float animationSpeed = 1f / chargeDuration;
         animator.speed = animationSpeed;
 
-        // Initialize start position on first frame
+        //Assign the enemy's current position to be used as the starting point for the Lerp.
         if (elapsedTime == 0f)
         {
             chargingStartPosition = transform.position;
@@ -156,6 +157,7 @@ public class EnemyAI : MonoBehaviour
         elapsedTime += Time.deltaTime;
         float progress = elapsedTime / chargeDuration;
 
+        //Smoothly transition to the last known player position over the duration of the charge animation.
         Vector3 moveToTarget = Vector3.Lerp(chargingStartPosition, lastPlayerPosition, progress);
         transform.position = moveToTarget;
 
